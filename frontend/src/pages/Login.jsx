@@ -14,6 +14,9 @@ const Login = () => {
         if (token) {
             navigate('/');
         }
+        if (!token) {
+            navigate('/login'); // Stay on the login page
+        }
     }, [navigate]);
 
     const handleChange = (e) => {

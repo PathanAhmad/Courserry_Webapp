@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import API_BASE_URL from './config'; // Import API_BASE_URL
+import API_BASE_URL from '../config'; // Import API_BASE_URL
 
 const BrowseCourses = ({ onCourseEnlisted }) => {
     const [courses, setCourses] = useState([]);

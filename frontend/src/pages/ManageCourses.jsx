@@ -95,7 +95,7 @@ const ManageCourses = () => {
                     </div>
                 ))
             ) : (
-                <p style={{ textAlign: 'center', color: '#6C757D' }}>No courses available.</p>
+                <p style={{ textAlign: 'center', color: '#6C757D' }}>You haven't published any courses yet</p>
             )}
         </div>
     );

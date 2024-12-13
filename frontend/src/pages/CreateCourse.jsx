@@ -344,7 +344,7 @@ const CreateCourse = () => {
                         margin: '20px auto',
                     }}
                 >
-                    Create Course
+                    Publish Course
                 </button>
             </form>
         </div>

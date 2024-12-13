@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from './config'; // Import API_BASE_URL
 
 const BrowseCourses = ({ onCourseEnlisted }) => {
     const [courses, setCourses] = useState([]);
@@ -9,7 +10,7 @@ const BrowseCourses = ({ onCourseEnlisted }) => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/students/all');
+                const response = await axios.get(`${API_BASE_URL}/api/students/all`); // Updated URL
                 setCourses(response.data.courses);
                 setLoading(false);
             } catch (error) {
@@ -25,7 +26,7 @@ const BrowseCourses = ({ onCourseEnlisted }) => {
         const token = localStorage.getItem('token'); // Retrieve the token
         try {
             await axios.post(
-                'http://localhost:5000/api/students/enlist',
+                `${API_BASE_URL}/api/students/enlist`, // Updated URL
                 { courseId },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

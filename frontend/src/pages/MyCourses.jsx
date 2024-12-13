@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config'; // Import API_BASE_URL
 
 const MyCourses = () => {
     const [courses, setCourses] = useState([]);
@@ -18,18 +19,18 @@ const MyCourses = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/students/my-courses', {
+                const response = await axios.get(`${API_BASE_URL}/api/students/my-courses`, { // Updated URL
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 const enlistedCourses = response.data.enlistedCourses;
 
                 const progressRequests = enlistedCourses.map((course) =>
-                    axios.get(`http://localhost:5000/api/students/progress/${course._id}`, {
+                    axios.get(`${API_BASE_URL}/api/students/progress/${course._id}`, { // Updated URL
                         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                     })
                 );
                 const scoreRequests = enlistedCourses.map((course) =>
-                    axios.get(`http://localhost:5000/api/students/score/${course._id}`, {
+                    axios.get(`${API_BASE_URL}/api/students/score/${course._id}`, { // Updated URL
                         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                     })
                 );
@@ -61,7 +62,7 @@ const MyCourses = () => {
     const handleUnenroll = async (courseId) => {
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/students/unenroll',
+                `${API_BASE_URL}/api/students/unenroll`, // Updated URL
                 { courseId },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
@@ -148,7 +149,6 @@ const MyCourses = () => {
                         </button>
                         <button
                             onClick={() => {
-
                                 handleUnenroll(course._id); // Unenroll from course
                             }}
                             style={{

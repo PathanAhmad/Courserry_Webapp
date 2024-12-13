@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_BASE_URL from '../config'; // Import API_BASE_URL
 
 const CreateCourse = () => {
     const [course, setCourse] = useState({
@@ -52,8 +53,30 @@ const CreateCourse = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Submitting course:', course);
-        setMessage({ type: 'success', text: 'Course created successfully!' });
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/courses`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify(course),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setMessage({ type: 'success', text: 'Course created successfully!' });
+                setCourse({
+                    title: '',
+                    description: '',
+                    videos: [],
+                }); // Reset form
+            } else {
+                setMessage({ type: 'error', text: data.message || 'Failed to create course.' });
+            }
+        } catch (error) {
+            setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+            console.error('Error creating course:', error);
+        }
     };
 
     return (

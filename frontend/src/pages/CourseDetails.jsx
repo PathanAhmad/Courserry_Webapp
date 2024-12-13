@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import QuestionModal from '../components/QuestionModal';
 import { motion, AnimatePresence } from 'framer-motion';
+import API_BASE_URL from '../config';
 
 const CourseDetails = () => {
     const { courseId } = useParams();
@@ -23,7 +24,7 @@ const CourseDetails = () => {
         const fetchCourseDetails = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:5000/api/students/my-courses/${courseId}`,
+                    `${API_BASE_URL}/api/students/my-courses/${courseId}`,
                     { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
                 );
                 setCourse(response.data.course);
@@ -41,7 +42,7 @@ const CourseDetails = () => {
     const fetchAnswers = async (videoId) => {
         try {
             const response = await axios.get(
-                `http://localhost:5000/api/students/video/${videoId}/answers`,
+                `${API_BASE_URL}/api/students/video/${videoId}/answers`,
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
             setAnswers(response.data.answers);
@@ -64,7 +65,7 @@ const CourseDetails = () => {
             const response = await Promise.all(
                 Object.entries(submittedAnswers).map(([questionId, selectedOption]) =>
                     axios.post(
-                        'http://localhost:5000/api/students/submit-answer',
+                        `${API_BASE_URL}/api/students/submit-answer`,
                         {
                             courseId,
                             videoId: currentVideo._id,
@@ -77,7 +78,7 @@ const CourseDetails = () => {
             );
 
             await axios.post(
-                'http://localhost:5000/api/students/mark-completed',
+                `${API_BASE_URL}/api/students/mark-completed`,
                 { videoId: currentVideo._id },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );

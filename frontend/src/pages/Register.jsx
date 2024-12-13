@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '../styles/auth.css';
+import API_BASE_URL from '../config'; // Import API_BASE_URL
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -30,11 +31,11 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+            const response = await axios.post(`${API_BASE_URL}/api/auth/register`, formData); // Updated URL
             alert(response.data.message);
             navigate('/login');
         } catch (error) {
-            alert(error.response.data.message || 'Registration failed');
+            alert(error.response?.data?.message || 'Registration failed');
         }
     };
 

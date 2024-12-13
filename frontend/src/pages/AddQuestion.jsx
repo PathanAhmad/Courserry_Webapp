@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from './config';
 
 const AddQuestion = () => {
     const [courses, setCourses] = useState([]);
@@ -18,7 +19,7 @@ const AddQuestion = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/courses', {
+                const response = await axios.get(`${API_BASE_URL}/api/courses`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setCourses(response.data.courses);
@@ -33,7 +34,7 @@ const AddQuestion = () => {
     // Fetch videos for the selected course
     const fetchVideos = async (courseId) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/courses/${courseId}/videos`, {
+            const response = await axios.get(`${API_BASE_URL}/api/courses/${courseId}/videos`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setVideos(response.data.videos);
@@ -74,7 +75,7 @@ const AddQuestion = () => {
         }
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/courses/add-question',
+                `${API_BASE_URL}/api/courses/add-question`,
                 {
                     courseId: selectedCourse,
                     videoId: selectedVideo,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config'; // Import API_BASE_URL
 
 const ManageCourses = () => {
     const [courses, setCourses] = useState([]);
@@ -9,7 +10,7 @@ const ManageCourses = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/courses', {
+                const response = await axios.get(`${API_BASE_URL}/api/courses`, { // Updated URL
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setCourses(response.data.courses);
@@ -24,7 +25,7 @@ const ManageCourses = () => {
     const handleDelete = async (courseId) => {
         if (window.confirm('Are you sure you want to delete this course?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/courses/${courseId}/delete`, {
+                await axios.delete(`${API_BASE_URL}/api/courses/${courseId}/delete`, { // Updated URL
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setCourses((prev) => prev.filter((course) => course._id !== courseId));

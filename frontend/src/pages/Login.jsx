@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '../styles/auth.css';
+import API_BASE_URL from '../config'; // Import API_BASE_URL
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -22,14 +23,14 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+            const response = await axios.post(`${API_BASE_URL}/api/auth/login`, formData); // Updated URL
             const { token, role } = response.data;
-    
+
             //console.log('Token Received:', token); // Log the token
-    
+
             localStorage.setItem('token', token);
             localStorage.setItem('role', role);
-    
+
             if (role === 'admin') {
                 navigate('/admin-portal');
             } else if (role === 'student') {

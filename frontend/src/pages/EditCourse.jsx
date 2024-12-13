@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import API_BASE_URL from '../config'; // Import API_BASE_URL
 
 const EditCourse = () => {
     const { courseId } = useParams();
@@ -11,7 +12,7 @@ const EditCourse = () => {
     useEffect(() => {
         const fetchCourseDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/courses/${courseId}`, {
+                const response = await axios.get(`${API_BASE_URL}/api/courses/${courseId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setCourse(response.data.course);
@@ -89,7 +90,7 @@ const EditCourse = () => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `http://localhost:5000/api/courses/${courseId}/edit`,
+                `${API_BASE_URL}/api/courses/${courseId}/edit`, // Updated URL
                 course,
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );

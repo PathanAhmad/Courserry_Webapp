@@ -11,9 +11,12 @@ dotenv.config();
 const app = express();
 
 const corsOptions = {
-    origin: 'https://courserry-webapp-1.onrender.com', // Your frontend's live URL
+    origin: [
+        'https://courserry-webapp-1.onrender.com', // Live frontend URL
+        'http://localhost:3000',                  // Local testing URL
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow necessary HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
+    allowedHeaders: ['Content-Type', 'Authorization'],    // Allow necessary headers
 };
 
 app.use(cors(corsOptions));

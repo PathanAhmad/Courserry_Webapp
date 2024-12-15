@@ -80,7 +80,7 @@ const BrowseCourses = ({ onCourseEnlisted }) => {
                     <div
                         key={course._id}
                         style={{
-                            background: 'rgba(255, 243, 245, 0.9)',
+                            background: 'rgba(255, 243, 245, 1)',
                             borderRadius: '10px',
                             boxShadow: '0 4px 8px rgba(255, 192, 203, 0.5)',
                             width: '250px',

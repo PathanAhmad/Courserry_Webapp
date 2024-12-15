@@ -1,19 +1,3 @@
-import axios from 'axios';
-
-// Add Axios interceptor for handling token expiration
-axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            // Clear local storage and redirect to login
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            window.location.href = '/login';
-        }
-        return Promise.reject(error);
-    }
-);
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -25,12 +9,30 @@ import AdminPortal from './pages/AdminPortal';
 import CreateCourse from './pages/CreateCourse';
 import AddVideo from './pages/AddVideo';
 import AddQuestion from './pages/AddQuestion';
-import ManageCourses from './pages/ManageCourses';
-import EditCourse from './pages/EditCourse';
+import ManageCourses from './pages/ManageCourses'; // Import ManageCourses
+import EditCourse from './pages/EditCourse'; // Import EditCourse
 import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CourseDetails from './pages/CourseDetails';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+// Axios Interceptor
+axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // Clear localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+
+            // Redirect to login
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

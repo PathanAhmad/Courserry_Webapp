@@ -83,7 +83,7 @@ const MyCourses = () => {
         <div
             style={{
                 padding: '20px',
-                background: 'rgba(255, 243, 245, 0.9)', // Subtle table background
+                background: 'rgba(255, 243, 245, 1)', // Subtle table background
                 borderRadius: '15px', // Rounded corners for the table container
                 boxShadow: '0 8px 16px rgba(200, 200, 200, 0.5)', // Subtle shadow for the container
             }}

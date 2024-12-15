@@ -208,6 +208,7 @@ const CourseDetails = () => {
                                     padding: '10px 20px',
                                     border: 'none',
                                     borderRadius: '5px',
+                                    boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
                                     backgroundColor: currentVideo.questions.length
                                         ? currentVideo.isCompleted
                                             ? '#E0E0E0'

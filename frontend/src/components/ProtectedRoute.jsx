@@ -1,43 +1,31 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
 
 const ProtectedRoute = ({ children, role }) => {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('role');
 
-    // If no token, redirect to login
+    // Redirect to login if no token exists
     if (!token) {
         return <Navigate to="/login" />;
     }
 
     try {
-        // Decode token to check for expiration
-        const decodedToken = jwtDecode(token);
-        const currentTime = Date.now() / 1000; // Current time in seconds
-
-        if (decodedToken.exp < currentTime) {
-            // Token expired, clear storage and redirect
-            localStorage.removeItem('token');
+        // Check if role is specified and doesn't match the user's role
+        if (role && userRole !== role) {
+            alert('Access Denied. You do not have the required role.');
+            localStorage.removeItem('token'); // Clear token for safety
             localStorage.removeItem('role');
-            alert('Session expired. Please log in again.');
             return <Navigate to="/login" />;
         }
     } catch (error) {
-        // Invalid token, clear storage and redirect
+        console.error('Error verifying token:', error);
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-        alert('Invalid token. Please log in again.');
         return <Navigate to="/login" />;
     }
 
-    // If role is provided, ensure the user has the correct role
-    if (role && userRole !== role) {
-        alert('Access Denied. You do not have the required role.');
-        return <Navigate to="/login" />;
-    }
-
-    // If everything is valid, render the children (protected page)
+    // If valid, render the protected content
     return children;
 };
 

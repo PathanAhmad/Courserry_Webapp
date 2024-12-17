@@ -1,113 +1,30 @@
-import React, { useState, useEffect, createContext } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
-import App from './App';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import StudentPortal from './pages/StudentPortal';
-import AdminPortal from './pages/AdminPortal';
-import CreateCourse from './pages/CreateCourse';
-import AddVideo from './pages/AddVideo';
-import AddQuestion from './pages/AddQuestion';
-import ManageCourses from './pages/ManageCourses';
-import EditCourse from './pages/EditCourse';
-import CourseDetails from './pages/CourseDetails';
-import MyCourses from './pages/MyCourses';
-import BrowseCourses from './pages/BrowseCourses';
-import './index.css';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-// Context for caching courses and progress
-export const DataContext = createContext();
-
-const AppWrapper = () => {
-    const [cachedCourses, setCachedCourses] = useState([]);
-    const [progressData, setProgressData] = useState({});
-    const [scoreData, setScoreData] = useState({});
+const App = () => {
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Optional: Pre-fetch courses here once if needed
-    }, []);
+        const token = localStorage.getItem('token');
+        const userRole = localStorage.getItem('role');
+
+        if (!token) {
+            navigate('/login');
+            window.location.reload(); // Force reload for Firefox
+        } else if (userRole === 'admin') {
+            navigate('/admin-portal');
+            window.location.reload();
+        } else if (userRole === 'student') {
+            navigate('/student-portal');
+            window.location.reload();
+        }
+    }, [navigate]);
 
     return (
-        <DataContext.Provider value={{ cachedCourses, setCachedCourses, progressData, setProgressData, scoreData, setScoreData }}>
-            <BrowserRouter>
-                <Routes>
-                    {/* General Routes */}
-                    <Route path="/" element={<App />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-
-                    {/* Student Portal */}
-                    <Route
-                        path="/student-portal"
-                        element={
-                            <ProtectedRoute role="student">
-                                <StudentPortal />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/my-courses/:courseId"
-                        element={
-                            <ProtectedRoute role="student">
-                                <CourseDetails />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    {/* Admin Portal */}
-                    <Route
-                        path="/admin-portal"
-                        element={
-                            <ProtectedRoute role="admin">
-                                <AdminPortal />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin-portal/create-course"
-                        element={
-                            <ProtectedRoute role="admin">
-                                <CreateCourse />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin-portal/add-video"
-                        element={
-                            <ProtectedRoute role="admin">
-                                <AddVideo />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin-portal/add-question"
-                        element={
-                            <ProtectedRoute role="admin">
-                                <AddQuestion />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin-portal/manage-courses"
-                        element={
-                            <ProtectedRoute role="admin">
-                                <ManageCourses />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin-portal/edit-course/:courseId"
-                        element={
-                            <ProtectedRoute role="admin">
-                                <EditCourse />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-            </BrowserRouter>
-        </DataContext.Provider>
+        <div className="container text-center mt-5">
+            <h1 className="text-primary">Redirecting based on role...</h1>
+        </div>
     );
 };
 
-export default AppWrapper;
+export default App;

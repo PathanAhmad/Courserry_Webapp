@@ -64,4 +64,18 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser };
+const validateToken = async (req, res) => {
+    const token = req.header('Authorization');
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        return res.status(200).json({ valid: true, role: decoded.user.role });
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+};
+
+module.exports = { registerUser, loginUser, validateToken };

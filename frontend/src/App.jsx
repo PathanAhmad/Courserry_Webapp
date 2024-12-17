@@ -7,18 +7,16 @@ const App = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         const userRole = localStorage.getItem('role');
-
+    
         if (!token) {
-            navigate('/login');
-            window.location.reload(); // Force reload for Firefox
+            window.location.href = '/login'; // Use full-page reload for Firefox
         } else if (userRole === 'admin') {
-            navigate('/admin-portal');
-            window.location.reload();
+            window.location.href = '/admin-portal'; // Full reload ensures proper routing
         } else if (userRole === 'student') {
-            navigate('/student-portal');
-            window.location.reload();
+            window.location.href = '/student-portal';
         }
-    }, [navigate]);
+    }, []);
+    
 
     return (
         <div className="container text-center mt-5">

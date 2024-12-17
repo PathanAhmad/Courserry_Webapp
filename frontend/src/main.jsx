@@ -34,81 +34,47 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
-                {/* General Routes */}
-                <Route path="/" element={<App />} />
+                {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Student Portal */}
+                {/* Protected Routes Wrapper */}
                 <Route
-                    path="/student-portal"
+                    path="/*"
                     element={
-                        <ProtectedRoute role="student">
-                            <StudentPortal />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/my-courses/:courseId"
-                    element={
-                        <ProtectedRoute role="student">
-                            <CourseDetails />
-                        </ProtectedRoute>
-                    }
-                />
+                        <ProtectedRoute>
+                            <Routes>
+                                {/* General Redirect */}
+                                <Route path="/" element={<App />} />
 
-                {/* Admin Portal */}
-                <Route
-                    path="/admin-portal"
-                    element={
-                        <ProtectedRoute role="admin">
-                            <AdminPortal />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/admin-portal/create-course"
-                    element={
-                        <ProtectedRoute role="admin">
-                            <CreateCourse />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/admin-portal/add-video"
-                    element={
-                        <ProtectedRoute role="admin">
-                            <AddVideo />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/admin-portal/add-question"
-                    element={
-                        <ProtectedRoute role="admin">
-                            <AddQuestion />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/admin-portal/manage-courses"
-                    element={
-                        <ProtectedRoute role="admin">
-                            <ManageCourses />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/admin-portal/edit-course/:courseId"
-                    element={
-                        <ProtectedRoute role="admin">
-                            <EditCourse />
-                        </ProtectedRoute>
-                    }
-                />
+                                {/* Student Portal */}
+                                <Route
+                                    path="/student-portal"
+                                    element={<ProtectedRoute role="student"><StudentPortal /></ProtectedRoute>}
+                                />
+                                <Route
+                                    path="/my-courses/:courseId"
+                                    element={<ProtectedRoute role="student"><CourseDetails /></ProtectedRoute>}
+                                />
 
-                {/* Catch-All Route */}
-                <Route path="*" element={<Navigate to="/login" />} />
+                                {/* Admin Portal */}
+                                <Route
+                                    path="/admin-portal"
+                                    element={<ProtectedRoute role="admin"><AdminPortal /></ProtectedRoute>}
+                                />
+                                <Route
+                                    path="/admin-portal/create-course"
+                                    element={<ProtectedRoute role="admin"><CreateCourse /></ProtectedRoute>}
+                                />
+                                <Route
+                                    path="/admin-portal/edit-course/:courseId"
+                                    element={<ProtectedRoute role="admin"><EditCourse /></ProtectedRoute>}
+                                />
+                                {/* Add other routes as needed */}
+                            </Routes>
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     </React.StrictMode>

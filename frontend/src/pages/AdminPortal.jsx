@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import CreateCourse from './CreateCourse';
 import ManageCourses from './ManageCourses';
+import NotFound from './NotFound';
 
 const AdminPortal = () => {
     const [activeTab, setActiveTab] = useState('dashboard'); // Default tab is Dashboard
@@ -12,24 +13,6 @@ const AdminPortal = () => {
         localStorage.removeItem('role');
         alert('Logged out successfully!');
         navigate('/login');
-    };
-
-    const renderContent = () => {
-        if (activeTab === 'dashboard') {
-            return (
-                <div style={{ textAlign: 'center', padding: '20px' }}>
-                    <h2>Welcome to the Admin Dashboard!</h2>
-                    <p>This section is under construction. Stay tuned for updates!</p>
-                </div>
-            );
-        }
-        if (activeTab === 'create-course') {
-            return <CreateCourse />;
-        }
-        if (activeTab === 'manage-courses') {
-            return <ManageCourses />;
-        }
-        return null;
     };
 
     return (
@@ -56,7 +39,7 @@ const AdminPortal = () => {
             >
                 <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexGrow: 1 }}>
                     <button
-                        onClick={() => setActiveTab('dashboard')}
+                        onClick={() => navigate('/admin-portal/dashboard')}
                         style={{
                             border: 'none',
                             backgroundColor: activeTab === 'dashboard' ? '#C2E4FF' : 'transparent',
@@ -69,7 +52,7 @@ const AdminPortal = () => {
                         Dashboard
                     </button>
                     <button
-                        onClick={() => setActiveTab('create-course')}
+                        onClick={() => navigate('/admin-portal/create-course')}
                         style={{
                             border: 'none',
                             backgroundColor: activeTab === 'create-course' ? '#C2E4FF' : 'transparent',
@@ -82,7 +65,7 @@ const AdminPortal = () => {
                         Create Course
                     </button>
                     <button
-                        onClick={() => setActiveTab('manage-courses')}
+                        onClick={() => navigate('/admin-portal/manage-courses')}
                         style={{
                             border: 'none',
                             backgroundColor: activeTab === 'manage-courses' ? '#C2E4FF' : 'transparent',
@@ -110,7 +93,22 @@ const AdminPortal = () => {
                 </button>
             </nav>
 
-            <div style={{ flexGrow: 1, padding: '20px' }}>{renderContent()}</div>
+            <div style={{ flexGrow: 1, padding: '20px' }}>
+                <Routes>
+                    <Route
+                        path="dashboard"
+                        element={
+                            <div style={{ textAlign: 'center', padding: '20px' }}>
+                                <h2>Welcome to the Admin Dashboard!</h2>
+                                <p>This section is under construction. Stay tuned for updates!</p>
+                            </div>
+                        }
+                    />
+                    <Route path="create-course" element={<CreateCourse />} />
+                    <Route path="manage-courses" element={<ManageCourses />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </div>
         </div>
     );
 };

@@ -1,14 +1,22 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation, Routes, Route } from 'react-router-dom';
 import MyCourses from './MyCourses';
 import BrowseCourses from './BrowseCourses';
 import Dashboard from './Dashboard';
+import NotFound from './NotFound';
 
 const StudentPortal = () => {
-    const location = useLocation(); // Hook to access location state
-    const [activeTab, setActiveTab] = useState(location.state?.fromTab || 'dashboard'); // Default tab is "Dashboard"
+    const location = useLocation();
     const navigate = useNavigate();
     const myCoursesRef = useRef(null);
+
+    const [activeTab, setActiveTab] = useState('dashboard'); // Default tab is Dashboard
+
+    // Sync activeTab state with the current URL
+    useEffect(() => {
+        const currentPath = location.pathname.split('/').pop(); // Get last part of the path
+        setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard'
+    }, [location.pathname]);
 
     // Function to play button click sound
     const playSound = () => {
@@ -28,19 +36,6 @@ const StudentPortal = () => {
         if (myCoursesRef.current) {
             myCoursesRef.current();
         }
-    };
-
-    const renderContent = () => {
-        if (activeTab === 'dashboard') {
-            return <Dashboard />;
-        }
-        if (activeTab === 'my-courses') {
-            return <MyCourses ref={myCoursesRef} />;
-        }
-        if (activeTab === 'browse-courses') {
-            return <BrowseCourses onCourseEnlisted={handleRefreshCourses} />;
-        }
-        return null;
     };
 
     return (
@@ -82,8 +77,8 @@ const StudentPortal = () => {
                     >
                         <button
                             onClick={() => {
-                                playSound(); // Play sound
-                                setActiveTab('dashboard');
+                                playSound();
+                                navigate('/student-portal/dashboard');
                             }}
                             style={{
                                 border: 'none',
@@ -99,8 +94,8 @@ const StudentPortal = () => {
                         </button>
                         <button
                             onClick={() => {
-                                playSound(); // Play sound
-                                setActiveTab('my-courses');
+                                playSound();
+                                navigate('/student-portal/my-courses');
                             }}
                             style={{
                                 border: 'none',
@@ -116,8 +111,8 @@ const StudentPortal = () => {
                         </button>
                         <button
                             onClick={() => {
-                                playSound(); // Play sound
-                                setActiveTab('browse-courses');
+                                playSound();
+                                navigate('/student-portal/browse-courses');
                             }}
                             style={{
                                 border: 'none',
@@ -148,7 +143,14 @@ const StudentPortal = () => {
                 </button>
             </nav>
 
-            <div style={{ flexGrow: 1, padding: '20px' }}>{renderContent()}</div>
+            <div style={{ flexGrow: 1, padding: '20px' }}>
+                <Routes>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="my-courses" element={<MyCourses ref={myCoursesRef} />} />
+                    <Route path="browse-courses" element={<BrowseCourses onCourseEnlisted={handleRefreshCourses} />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </div>
         </div>
     );
 };

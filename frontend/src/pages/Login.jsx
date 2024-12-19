@@ -37,10 +37,10 @@ const Login = () => {
             if (role === 'admin') {
                 navigate('/admin-portal/dashboard');
             } else if (role === 'student') {
-                navigate('/student-portal/dashboard'); // Ensure explicit dashboard redirection
+                navigate('/student-portal/dashboard');
             } else {
                 alert('Unknown role. Please contact support.');
-            }            
+            }
         } catch (error) {
             alert(error.response?.data?.message || 'Login failed');
         }

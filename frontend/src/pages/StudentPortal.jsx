@@ -144,14 +144,12 @@ const StudentPortal = () => {
             </nav>
 
             <div style={{ flexGrow: 1, padding: '20px' }}>
-            <Routes>
-                <Route path="/" element={<Dashboard />} /> {/* Default to Dashboard */}
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="my-courses" element={<MyCourses ref={myCoursesRef} />} />
-                <Route path="browse-courses" element={<BrowseCourses onCourseEnlisted={handleRefreshCourses} />} />
-                <Route path="notfound" element={<NotFound />} />
-                <Route path="*" element={<Navigate to="notfound" replace />} /> {/* Redirect invalid links */}
-            </Routes>
+                <Routes>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="my-courses" element={<MyCourses ref={myCoursesRef} />} />
+                    <Route path="browse-courses" element={<BrowseCourses onCourseEnlisted={handleRefreshCourses} />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
             </div>
         </div>
     );

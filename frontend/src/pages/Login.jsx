@@ -35,12 +35,12 @@ const Login = () => {
             localStorage.setItem('role', role);
 
             if (role === 'admin') {
-                navigate('/admin-portal');
+                navigate('/admin-portal/dashboard');
             } else if (role === 'student') {
-                navigate('/student-portal');
+                navigate('/student-portal/dashboard'); // Ensure explicit dashboard redirection
             } else {
                 alert('Unknown role. Please contact support.');
-            }
+            }            
         } catch (error) {
             alert(error.response?.data?.message || 'Login failed');
         }

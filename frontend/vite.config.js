@@ -1,19 +1,26 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/',
   resolve: {
     alias: {
       // Add any aliases here if needed
     },
   },
   server: {
-    port: 3000, // You can change this to your preferred port
+    port: 3000,
     hmr: {
-      overlay: true, // Enables the overlay for debugging
+      overlay: true,
     },
+  },
+  build: {
+    outDir: 'dist', // Ensure your output directory is correctly named
+  },
+  base: '/', // Set the base path for your app
+  preview: {
+    // Add this section for preview fallback
+    port: 3000,
+    open: true,
   },
 });

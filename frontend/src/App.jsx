@@ -1,40 +1,49 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const App = () => {
+    const navigate = useNavigate();
+
     useEffect(() => {
         const validateToken = async () => {
             const token = localStorage.getItem('token');
             const userRole = localStorage.getItem('role');
 
             if (!token) {
-                window.location.href = '/login';
+                navigate('/login'); // Redirect to login if no token is found
                 return;
             }
 
             try {
-                // Validate token from the backend
-                const response = await axios.get('http://localhost:5000/api/auth/validate-token', {
+                // Validate token with the backend
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/auth/validate-token`, {
                     headers: { Authorization: token },
                 });
 
                 if (response.data.valid) {
+                    // Redirect based on the user role
                     if (response.data.role === 'admin') {
-                        window.location.href = '/admin-portal';
+                        navigate('/admin-portal/dashboard');
                     } else if (response.data.role === 'student') {
-                        window.location.href = '/student-portal';
+                        navigate('/student-portal/dashboard');
                     }
+                } else {
+                    // Token is invalid or expired
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('role');
+                    navigate('/login');
                 }
             } catch (error) {
-                // If token is invalid/expired
+                // Handle errors during token validation
                 localStorage.removeItem('token');
                 localStorage.removeItem('role');
-                window.location.href = '/login';
+                navigate('/login');
             }
         };
 
         validateToken();
-    }, []);
+    }, [navigate]);
 
     return (
         <div className="container text-center mt-5">

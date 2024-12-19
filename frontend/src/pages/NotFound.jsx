@@ -4,6 +4,17 @@ import { useNavigate } from 'react-router-dom';
 const NotFound = () => {
     const navigate = useNavigate();
 
+    // Determine the user's role from localStorage
+    const userRole = localStorage.getItem('role');
+
+    const redirectToPortal = () => {
+        if (userRole === 'admin') {
+            navigate('/admin-portal/dashboard');
+        } else {
+            navigate('/student-portal/dashboard');
+        }
+    };
+
     return (
         <div
             style={{
@@ -36,7 +47,7 @@ const NotFound = () => {
                 Go Back
             </button>
             <button
-                onClick={() => navigate('/student-portal/dashboard')} // Redirect to the main page
+                onClick={redirectToPortal} // Redirect based on role
                 style={{
                     margin: '10px',
                     padding: '10px 20px',

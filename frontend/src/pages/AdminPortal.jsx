@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Routes, Route } from 'react-router-dom';
+import AdminDashboard from './AdminDashboard';
 import CreateCourse from './CreateCourse';
 import ManageCourses from './ManageCourses';
 import NotFound from './NotFound';
@@ -7,6 +8,12 @@ import NotFound from './NotFound';
 const AdminPortal = () => {
     const [activeTab, setActiveTab] = useState('dashboard'); // Default tab is Dashboard
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const currentPath = location.pathname.split('/').pop(); // Get last part of the path
+        setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard'
+    }, [location.pathname]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -95,15 +102,7 @@ const AdminPortal = () => {
 
             <div style={{ flexGrow: 1, padding: '20px' }}>
                 <Routes>
-                    <Route
-                        path="dashboard"
-                        element={
-                            <div style={{ textAlign: 'center', padding: '20px' }}>
-                                <h2>Welcome to the Admin Dashboard!</h2>
-                                <p>This section is under construction. Stay tuned for updates!</p>
-                            </div>
-                        }
-                    />
+                    <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="create-course" element={<CreateCourse />} />
                     <Route path="manage-courses" element={<ManageCourses />} />
                     <Route path="*" element={<NotFound />} />

@@ -31,10 +31,10 @@ app.use('/api/students', studentRoutes);
 // Serve static files for the React app
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// React Router fallback for non-API routes
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+// // React Router fallback for non-API routes
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// });
 
 const PORT = process.env.PORT || 5000;
 

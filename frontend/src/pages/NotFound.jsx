@@ -36,7 +36,7 @@ const NotFound = () => {
                 Go Back
             </button>
             <button
-                onClick={() => navigate('/')} // Redirect to the main page
+                onClick={() => navigate('/student-portal/dashboard')} // Redirect to the main page
                 style={{
                     margin: '10px',
                     padding: '10px 20px',

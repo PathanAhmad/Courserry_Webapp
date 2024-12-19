@@ -46,7 +46,7 @@ const StudentPortal = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
-                background: 'url(/images/beach.jpg) no-repeat center center',
+                background: 'url(/images/minimal_clouds.jpg) no-repeat center center',
                 backgroundSize: 'cover',
             }}
         >

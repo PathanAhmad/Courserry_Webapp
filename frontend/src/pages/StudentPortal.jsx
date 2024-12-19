@@ -4,19 +4,82 @@ import MyCourses from './MyCourses';
 import BrowseCourses from './BrowseCourses';
 import Dashboard from './Dashboard';
 import NotFound from './NotFound';
+import axios from 'axios';
+import API_BASE_URL from '../config';
 
 const StudentPortal = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const myCoursesRef = useRef(null);
 
     const [activeTab, setActiveTab] = useState('dashboard'); // Default tab is Dashboard
+    const [courses, setCourses] = useState([]);
+    const [progressData, setProgressData] = useState({});
+    const [scoreData, setScoreData] = useState({});
+    const [browseCourses, setBrowseCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // Sync activeTab state with the current URL
     useEffect(() => {
         const currentPath = location.pathname.split('/').pop(); // Get last part of the path
         setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard'
     }, [location.pathname]);
+
+    // Function to fetch and cache data
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+
+            // Fetch MyCourses data
+            const myCoursesResponse = await axios.get(`${API_BASE_URL}/api/students/my-courses`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            const enlistedCourses = myCoursesResponse.data.enlistedCourses;
+
+            const progressRequests = enlistedCourses.map((course) =>
+                axios.get(`${API_BASE_URL}/api/students/progress/${course._id}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                })
+            );
+            const scoreRequests = enlistedCourses.map((course) =>
+                axios.get(`${API_BASE_URL}/api/students/score/${course._id}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                })
+            );
+
+            const progressResponses = await Promise.all(progressRequests);
+            const scoreResponses = await Promise.all(scoreRequests);
+
+            const progressMap = {};
+            const scoreMap = {};
+
+            enlistedCourses.forEach((course, index) => {
+                progressMap[course._id] = progressResponses[index]?.data.progress || 0;
+                scoreMap[course._id] = scoreResponses[index]?.data.totalScore || 'N/A';
+            });
+
+            setCourses(enlistedCourses);
+            setProgressData(progressMap);
+            setScoreData(scoreMap);
+
+            // Fetch BrowseCourses data
+            const browseCoursesResponse = await axios.get(`${API_BASE_URL}/api/students/all`);
+            setBrowseCourses(browseCoursesResponse.data.courses);
+
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setLoading(false);
+        }
+    };
+
+    // Refresh data when needed
+    const refreshData = () => {
+        fetchData();
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     // Function to play button click sound
     const playSound = () => {
@@ -25,18 +88,16 @@ const StudentPortal = () => {
     };
 
     const handleLogout = () => {
-        playSound(); // Play sound
+        playSound();
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         alert('Logged out successfully!');
         navigate('/login');
     };
 
-    const handleRefreshCourses = () => {
-        if (myCoursesRef.current) {
-            myCoursesRef.current();
-        }
-    };
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div
@@ -145,9 +206,29 @@ const StudentPortal = () => {
 
             <div style={{ flexGrow: 1, padding: '20px' }}>
                 <Routes>
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="my-courses" element={<MyCourses ref={myCoursesRef} />} />
-                    <Route path="browse-courses" element={<BrowseCourses onCourseEnlisted={handleRefreshCourses} />} />
+                    <Route
+                        path="dashboard"
+                        element={<Dashboard />}
+                    />
+                    <Route
+                        path="my-courses"
+                        element={
+                            <MyCourses
+                                coursesProp={courses}
+                                progressDataProp={progressData}
+                                scoreDataProp={scoreData}
+                            />
+                        }
+                    />
+                    <Route
+                        path="browse-courses"
+                        element={
+                            <BrowseCourses
+                                initialCourses={browseCourses}
+                                onCourseEnlisted={refreshData}
+                            />
+                        }
+                    />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </div>

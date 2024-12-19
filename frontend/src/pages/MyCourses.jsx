@@ -1,59 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import API_BASE_URL from '../config';
 
 const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {} }) => {
     const [courses, setCourses] = useState(coursesProp);
     const [progressData, setProgressData] = useState(progressDataProp);
     const [scoreData, setScoreData] = useState(scoreDataProp);
-    const [loading, setLoading] = useState(!coursesProp.length);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (coursesProp.length) return; // Use cached data if available
-
-        const fetchCourses = async () => {
-            try {
-                const response = await axios.get(`${API_BASE_URL}/api/students/my-courses`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-                });
-                const enlistedCourses = response.data.enlistedCourses;
-
-                const progressRequests = enlistedCourses.map((course) =>
-                    axios.get(`${API_BASE_URL}/api/students/progress/${course._id}`, {
-                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-                    })
-                );
-                const scoreRequests = enlistedCourses.map((course) =>
-                    axios.get(`${API_BASE_URL}/api/students/score/${course._id}`, {
-                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-                    })
-                );
-
-                const progressResponses = await Promise.all(progressRequests);
-                const scoreResponses = await Promise.all(scoreRequests);
-
-                const progressMap = {};
-                const scoreMap = {};
-
-                enlistedCourses.forEach((course, index) => {
-                    progressMap[course._id] = progressResponses[index]?.data.progress || 0;
-                    scoreMap[course._id] = scoreResponses[index]?.data.totalScore || 'N/A';
-                });
-
-                setCourses(enlistedCourses);
-                setProgressData(progressMap);
-                setScoreData(scoreMap);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching courses:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchCourses();
-    }, [coursesProp]);
+        // Sync props with state
+        setCourses(coursesProp);
+        setProgressData(progressDataProp);
+        setScoreData(scoreDataProp);
+    }, [coursesProp, progressDataProp, scoreDataProp]);
 
     const handleUnenroll = async (courseId) => {
         try {
@@ -70,7 +29,7 @@ const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {}
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (!courses.length) return <div>No courses enrolled yet.</div>;
 
     return (
         <div

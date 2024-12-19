@@ -1,27 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import API_BASE_URL from '../config';
 
 const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
     const [courses, setCourses] = useState(initialCourses);
     const [searchQuery, setSearchQuery] = useState('');
-    const [loading, setLoading] = useState(!initialCourses.length);
 
     useEffect(() => {
-        if (initialCourses.length) return; // Use cached data if available
-
-        const fetchCourses = async () => {
-            try {
-                const response = await axios.get(`${API_BASE_URL}/api/students/all`);
-                setCourses(response.data.courses);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching courses:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchCourses();
+        // Sync props with state
+        setCourses(initialCourses);
     }, [initialCourses]);
 
     const handleEnlist = async (courseId) => {
@@ -32,7 +17,7 @@ const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
             alert('Successfully enlisted!');
-            if (onCourseEnlisted) onCourseEnlisted();
+            if (onCourseEnlisted) onCourseEnlisted(); // Trigger refresh in StudentPortal
         } catch (error) {
             console.error('Error enlisting in course:', error);
             alert('Enlistment failed');
@@ -43,7 +28,7 @@ const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
         course.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    if (loading) return <div>Loading...</div>;
+    if (!courses.length) return <div>No courses available to browse.</div>;
 
     return (
         <div>

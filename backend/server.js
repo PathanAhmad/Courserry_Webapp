@@ -38,6 +38,11 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+// Ping route for keep-alive requests
+app.get('/api/ping', (req, res) => {
+    res.status(200).json({ message: 'Pong! Server is active.' });
+});
+
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error(err));

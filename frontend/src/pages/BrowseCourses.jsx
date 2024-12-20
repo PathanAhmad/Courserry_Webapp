@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import axios
+import API_BASE_URL from '../config'; // Ensure you have the correct path to config
 
 const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
     const [courses, setCourses] = useState(initialCourses);
@@ -11,6 +13,7 @@ const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
 
     const handleEnlist = async (courseId) => {
         try {
+            console.log('Enlisting course with ID:', courseId);
             await axios.post(
                 `${API_BASE_URL}/api/students/enlist`,
                 { courseId },
@@ -19,8 +22,8 @@ const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
             alert('Successfully enlisted!');
             if (onCourseEnlisted) onCourseEnlisted(); // Trigger refresh in StudentPortal
         } catch (error) {
-            console.error('Error enlisting in course:', error);
-            alert('Enlistment failed');
+            console.error('Error enlisting in course:', error.response?.data || error.message);
+            alert(error.response?.data?.message || 'Enlistment failed');
         }
     };
 

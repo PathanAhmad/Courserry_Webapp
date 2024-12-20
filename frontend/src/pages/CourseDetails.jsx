@@ -136,7 +136,7 @@ const CourseDetails = () => {
                     }}
                     onClick={() => {
                         playSound(); // Play sound
-                        navigate('/student-portal', { state: { fromTab: 'my-courses' } });
+                        navigate('/student-portal/my-courses', { state: { fromTab: 'my-courses' } });
                     }}
                 >
                     Back

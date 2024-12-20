@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios
+import API_BASE_URL from '../config'; // Ensure you have the correct path to config
 
 const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {} }) => {
     const [courses, setCourses] = useState(coursesProp);
@@ -16,7 +18,7 @@ const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {}
 
     const handleUnenroll = async (courseId) => {
         try {
-            await axios.post(
+            const response = await axios.post(
                 `${API_BASE_URL}/api/students/unenroll`,
                 { courseId },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
@@ -24,8 +26,8 @@ const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {}
             alert('Successfully unenrolled!');
             setCourses((prevCourses) => prevCourses.filter((course) => course._id !== courseId));
         } catch (error) {
-            console.error('Error unenrolling:', error);
-            alert('Failed to unenroll');
+            console.error('Error unenrolling:', error.response?.data || error.message);
+            alert(error.response?.data?.message || 'Failed to unenroll');
         }
     };
 

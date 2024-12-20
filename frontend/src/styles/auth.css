@@ -5,7 +5,7 @@
     height: 100vh;
     margin: 0;
     width: 100vw;
-    background: url('/images/space_blue.jpg') no-repeat center center;
+    background: url('/images/wave_modern.jpg') no-repeat center center;
     background-size: cover;
     background-color: rgba(15, 32, 39, 0.95); /* Subtle dark overlay for better contrast */
 }
@@ -15,7 +15,7 @@
     max-width: 400px;
     padding: 2rem;
     background: rgba(15, 32, 39, 0.9); /* Darker background for a modern feel */
-    background-image: linear-gradient(145deg, rgba(15, 32, 39, 1), rgba(32, 58, 67, 0.85));
+    background-image: linear-gradient(145deg, rgba(15, 32, 39, 0), rgba(32, 58, 67, 0));
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Subtle, modern shadow */
     border-radius: 2.5rem;
     text-align: center;
@@ -47,11 +47,6 @@
 .auth-container select {
     appearance: none; /* Removes default browser arrow styling */
     cursor: pointer;
-}
-
-/* For the default option in select (if any) */
-.auth-container select option[value=""] {
-    color: rgba(220, 220, 220, 0.8);
 }
 
 /* Hover and focus states remain subtle, no layout shifts */

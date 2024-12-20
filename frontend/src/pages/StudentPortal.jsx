@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Routes, Route } from 'react-router-dom';
 import MyCourses from './MyCourses';
 import BrowseCourses from './BrowseCourses';
@@ -11,25 +11,22 @@ const StudentPortal = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [activeTab, setActiveTab] = useState('dashboard'); // Default tab is Dashboard
+    const [activeTab, setActiveTab] = useState('dashboard');
     const [courses, setCourses] = useState([]);
     const [progressData, setProgressData] = useState({});
     const [scoreData, setScoreData] = useState({});
     const [browseCourses, setBrowseCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Sync activeTab state with the current URL
     useEffect(() => {
-        const currentPath = location.pathname.split('/').pop(); // Get last part of the path
-        setActiveTab(currentPath || 'dashboard'); // Default to 'dashboard'
+        const currentPath = location.pathname.split('/').pop();
+        setActiveTab(currentPath || 'dashboard');
     }, [location.pathname]);
 
-    // Function to fetch and cache data
     const fetchData = async () => {
         try {
             setLoading(true);
 
-            // Fetch MyCourses data
             const myCoursesResponse = await axios.get(`${API_BASE_URL}/api/students/my-courses`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
@@ -61,7 +58,6 @@ const StudentPortal = () => {
             setProgressData(progressMap);
             setScoreData(scoreMap);
 
-            // Fetch BrowseCourses data
             const browseCoursesResponse = await axios.get(`${API_BASE_URL}/api/students/all`);
             setBrowseCourses(browseCoursesResponse.data.courses);
 
@@ -72,7 +68,6 @@ const StudentPortal = () => {
         }
     };
 
-    // Refresh data when needed
     const refreshData = () => {
         fetchData();
     };
@@ -81,9 +76,8 @@ const StudentPortal = () => {
         fetchData();
     }, []);
 
-    // Function to play button click sound
     const playSound = () => {
-        const audio = new Audio('/audio/ButtonClick.wav'); // Path to ButtonClick.wav
+        const audio = new Audio('/audio/ButtonClick.wav');
         audio.play();
     };
 
@@ -107,20 +101,21 @@ const StudentPortal = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
-                background: 'url(/images/minimal_clouds.jpg) no-repeat center center',
+                background: 'url(/images/wave_modern.jpg) no-repeat center center',
                 backgroundSize: 'cover',
+                backdropFilter: 'blur(4px)',
             }}
         >
             <nav
                 style={{
-                    background: 'linear-gradient(145deg, rgba(255, 223, 237, 0.9), rgba(255, 243, 245, 0.8))',
-                    color: '#000',
+                    background: 'linear-gradient(145deg, rgba(15, 32, 39, 0.95), rgba(32, 58, 67, 0.95))',
+                    color: '#FFFFFF',
                     height: '50px',
                     padding: '10px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    boxShadow: '0 8px 16px rgba(255, 192, 203, 1)',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
                 }}
             >
                 <div
@@ -143,12 +138,13 @@ const StudentPortal = () => {
                             }}
                             style={{
                                 border: 'none',
-                                backgroundColor: activeTab === 'dashboard' ? '#FFC1E3' : 'transparent',
-                                color: activeTab === 'dashboard' ? '#000' : '#555',
+                                backgroundColor: activeTab === 'dashboard' ? '#1E90FF' : 'transparent',
+                                color: activeTab === 'dashboard' ? '#FFFFFF' : '#AAAAAA',
                                 padding: '5px 15px',
                                 borderRadius: '5px',
                                 cursor: 'pointer',
-                                boxShadow: activeTab === 'dashboard' ? '0 4px 8px rgba(255, 192, 203, 0.5)' : 'none',
+                                transition: 'all 0.2s ease-in-out',
+                                boxShadow: activeTab === 'dashboard' ? '0 4px 8px rgba(30, 144, 255, 0.5)' : 'none',
                             }}
                         >
                             Dashboard
@@ -160,12 +156,13 @@ const StudentPortal = () => {
                             }}
                             style={{
                                 border: 'none',
-                                backgroundColor: activeTab === 'my-courses' ? '#FFC1E3' : 'transparent',
-                                color: activeTab === 'my-courses' ? '#000' : '#555',
+                                backgroundColor: activeTab === 'my-courses' ? '#1E90FF' : 'transparent',
+                                color: activeTab === 'my-courses' ? '#FFFFFF' : '#AAAAAA',
                                 padding: '5px 15px',
                                 borderRadius: '5px',
                                 cursor: 'pointer',
-                                boxShadow: activeTab === 'my-courses' ? '0 4px 8px rgba(255, 192, 203, 0.5)' : 'none',
+                                transition: 'all 0.2s ease-in-out',
+                                boxShadow: activeTab === 'my-courses' ? '0 4px 8px rgba(30, 144, 255, 0.5)' : 'none',
                             }}
                         >
                             My Courses
@@ -177,12 +174,13 @@ const StudentPortal = () => {
                             }}
                             style={{
                                 border: 'none',
-                                backgroundColor: activeTab === 'browse-courses' ? '#FFC1E3' : 'transparent',
-                                color: activeTab === 'browse-courses' ? '#000' : '#555',
+                                backgroundColor: activeTab === 'browse-courses' ? '#1E90FF' : 'transparent',
+                                color: activeTab === 'browse-courses' ? '#FFFFFF' : '#AAAAAA',
                                 padding: '5px 15px',
                                 borderRadius: '5px',
                                 cursor: 'pointer',
-                                boxShadow: activeTab === 'browse-courses' ? '0 4px 8px rgba(255, 192, 203, 0.5)' : 'none',
+                                transition: 'all 0.2s ease-in-out',
+                                boxShadow: activeTab === 'browse-courses' ? '0 4px 8px rgba(30, 144, 255, 0.5)' : 'none',
                             }}
                         >
                             Browse Courses
@@ -192,12 +190,14 @@ const StudentPortal = () => {
                 <button
                     onClick={handleLogout}
                     style={{
-                        border: '1px solid rgba(255, 182, 193, 0.5)',
-                        background: 'rgba(255, 223, 237, 0.85)',
-                        color: '#000',
+                        border: '1px solid rgba(30, 144, 255, 0.5)',
+                        background: 'rgba(32, 58, 67, 0.85)',
+                        color: '#FFFFFF',
                         padding: '5px 15px',
                         borderRadius: '5px',
                         cursor: 'pointer',
+                        transition: 'all 0.2s ease-in-out',
+                        boxShadow: '0 4px 8px rgba(30, 144, 255, 0.3)',
                     }}
                 >
                     Logout
@@ -206,10 +206,7 @@ const StudentPortal = () => {
 
             <div style={{ flexGrow: 1, padding: '20px' }}>
                 <Routes>
-                    <Route
-                        path="dashboard"
-                        element={<Dashboard />}
-                    />
+                    <Route path="dashboard" element={<Dashboard />} />
                     <Route
                         path="my-courses"
                         element={

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion'; // Import framer-motion
 
 const QuestionModal = ({ questions, onClose, onSubmitAnswers, isCompleted }) => {
     const [currentIndex, setCurrentIndex] = useState(0); // Track the current question
     const [selectedAnswers, setSelectedAnswers] = useState({}); // Track selected answers
 
-    // Function to play button click sound
     const playSound = () => {
-        const audio = new Audio('/audio/ButtonClick.wav'); // Path to ButtonClick.wav
+        const audio = new Audio('/audio/ButtonClick.wav');
         audio.play();
     };
 
@@ -35,42 +35,50 @@ const QuestionModal = ({ questions, onClose, onSubmitAnswers, isCompleted }) => 
                 alert('Please answer all questions before submitting.');
                 return;
             }
-            onSubmitAnswers(selectedAnswers); // Submit the selected answers
+            onSubmitAnswers(selectedAnswers);
         }
-        onClose(); // Close the modal
+        onClose();
     };
 
     return (
-        <div
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
             style={{
                 position: 'fixed',
                 top: 0,
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 zIndex: 1000,
             }}
         >
-            <div
+            <motion.div
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.8 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                 style={{
                     position: 'relative',
-                    background: 'rgba(255, 255, 255, 1)', // Sakura pink background
+                    background: 'linear-gradient(145deg, #203A43, #2C5364)',
                     padding: '20px',
-                    borderRadius: '10px',
+                    borderRadius: '15px',
                     width: '600px',
                     maxHeight: '90vh',
                     textAlign: 'center',
-                    boxShadow: '0 8px 16px rgba(255, 192, 203, 1)', // Pink shadow
+                    boxShadow: '0 15px 30px rgba(0, 0, 0, 0.5)',
                     overflow: 'hidden',
                 }}
             >
                 <button
                     onClick={() => {
-                        playSound(); // Play sound
+                        playSound();
                         onClose();
                     }}
                     style={{
@@ -82,27 +90,34 @@ const QuestionModal = ({ questions, onClose, onSubmitAnswers, isCompleted }) => 
                         fontSize: '18px',
                         fontWeight: 'bold',
                         cursor: 'pointer',
-                        color: '#555',
+                        color: '#FFFFFF',
                     }}
                 >
                     ✖
                 </button>
-                <h2 style={{ color: '#333' }}>Question {currentIndex + 1}</h2>
+                <h2 style={{ color: '#FFFFFF', marginBottom: '20px' }}>
+                    Question {currentIndex + 1}
+                </h2>
                 <div
                     style={{
-                        height: '300px',
+                        height: '350px',
                         overflowY: 'auto',
                         marginBottom: '20px',
+                        padding: '10px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: '10px',
                     }}
                 >
-                    <p style={{ color: '#333', margin: '10px' }}>{questions[currentIndex].questionText}</p>
+                    <p style={{ color: '#FFFFFF', height: '50px' }}>{questions[currentIndex].questionText}</p>
                     <div>
                         {questions[currentIndex].options.map((option, index) => (
-                            <button
+                            <motion.button
                                 key={index}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => {
                                     if (!isCompleted) {
-                                        playSound(); // Play sound
+                                        playSound();
                                         handleAnswerSelect(questions[currentIndex]._id, index);
                                     }
                                 }}
@@ -112,26 +127,27 @@ const QuestionModal = ({ questions, onClose, onSubmitAnswers, isCompleted }) => 
                                     padding: '10px',
                                     backgroundColor:
                                         selectedAnswers[questions[currentIndex]._id] === index
-                                            ? '#FFC1E3' // Light pink for selected
-                                            : '#FFF5F8', // Softer pink for default
-                                    color: '#333',
-                                    border: '1px solid rgba(255, 182, 193, 0.5)',
-                                    borderRadius: '5px',
+                                            ? '#1E90FF'
+                                            : '#203A43',
+                                    color: '#FFFFFF',
+                                    border: '1px solid rgba(30, 144, 255, 0.5)',
+                                    borderRadius: '8px',
                                     width: '90%',
                                     cursor: isCompleted ? 'not-allowed' : 'pointer',
-                                    boxShadow: '0 4px 8px rgba(255, 192, 203, 0.5)',
+                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                                    transition: 'all 0.3s ease',
                                 }}
                                 disabled={isCompleted}
                             >
                                 {option}
-                            </button>
+                            </motion.button>
                         ))}
                     </div>
                 </div>
                 <div style={{ marginTop: '20px' }}>
                     <button
                         onClick={() => {
-                            playSound(); // Play sound
+                            playSound();
                             handlePrevious();
                         }}
                         disabled={currentIndex === 0}
@@ -139,9 +155,9 @@ const QuestionModal = ({ questions, onClose, onSubmitAnswers, isCompleted }) => 
                             marginRight: '10px',
                             padding: '10px 20px',
                             border: 'none',
-                            borderRadius: '5px',
-                            backgroundColor: currentIndex === 0 ? '#E0E0E0' : '#FFC1E3',
-                            color: currentIndex === 0 ? '#aaa' : '#333',
+                            borderRadius: '8px',
+                            backgroundColor: currentIndex === 0 ? '#555' : '#1E90FF',
+                            color: '#FFFFFF',
                             cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
                         }}
                     >
@@ -149,7 +165,7 @@ const QuestionModal = ({ questions, onClose, onSubmitAnswers, isCompleted }) => 
                     </button>
                     <button
                         onClick={() => {
-                            playSound(); // Play sound
+                            playSound();
                             handleNext();
                         }}
                         disabled={currentIndex === questions.length - 1}
@@ -157,36 +173,38 @@ const QuestionModal = ({ questions, onClose, onSubmitAnswers, isCompleted }) => 
                             marginLeft: '10px',
                             padding: '10px 20px',
                             border: 'none',
-                            borderRadius: '5px',
+                            borderRadius: '8px',
                             backgroundColor:
-                                currentIndex === questions.length - 1 ? '#E0E0E0' : '#FFC1E3',
-                            color: currentIndex === questions.length - 1 ? '#aaa' : '#333',
+                                currentIndex === questions.length - 1 ? '#555' : '#1E90FF',
+                            color: '#FFFFFF',
                             cursor: currentIndex === questions.length - 1 ? 'not-allowed' : 'pointer',
                         }}
                     >
                         Next
                     </button>
                 </div>
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => {
-                        playSound(); // Play sound
+                        playSound();
                         handleSubmit();
                     }}
                     disabled={isCompleted}
                     style={{
                         marginTop: '20px',
                         padding: '10px 20px',
-                        backgroundColor: isCompleted ? '#E0E0E0' : '#FFC1E3',
-                        color: isCompleted ? '#aaa' : '#333',
+                        backgroundColor: isCompleted ? '#555' : '#1E90FF',
+                        color: '#FFFFFF',
                         border: 'none',
-                        borderRadius: '5px',
+                        borderRadius: '8px',
                         cursor: isCompleted ? 'not-allowed' : 'pointer',
                     }}
                 >
                     {isCompleted ? 'Already Completed' : 'Submit'}
-                </button>
-            </div>
-        </div>
+                </motion.button>
+            </motion.div>
+        </motion.div>
     );
 };
 

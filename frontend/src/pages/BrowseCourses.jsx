@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import axios
-import API_BASE_URL from '../config'; // Ensure you have the correct path to config
+import axios from 'axios';
+import { motion } from 'framer-motion'; // Import Framer Motion
+import API_BASE_URL from '../config';
 
 const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
     const [courses, setCourses] = useState(initialCourses);
@@ -13,7 +14,6 @@ const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
 
     const handleEnlist = async (courseId) => {
         try {
-            console.log('Enlisting course with ID:', courseId);
             await axios.post(
                 `${API_BASE_URL}/api/students/enlist`,
                 { courseId },
@@ -31,54 +31,121 @@ const BrowseCourses = ({ initialCourses = [], onCourseEnlisted }) => {
         course.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    if (!courses.length) return <div>No courses available to browse.</div>;
+    if (!courses.length)
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    padding: '20px',
+                    color: '#AAAAAA',
+                    fontSize: '1.2rem',
+                }}
+            >
+                No courses available to browse.
+            </div>
+        );
 
     return (
         <div>
             <div style={{ padding: '10px', textAlign: 'center' }}>
-                <input
+                <motion.input
                     type="text"
                     placeholder="Search Courses"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    whileFocus={{
+                        scale: 1.05,
+                        boxShadow: '0 0 10px rgba(30, 144, 255, 0.5)',
+                    }}
                     style={{
                         padding: '10px',
                         width: '300px',
                         borderRadius: '5px',
-                        border: '1px solid #ccc',
+                        border: '1px solid rgba(200, 200, 200, 0.5)',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                        transition: 'all 0.2s ease-in-out',
                     }}
                 />
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    hidden: { opacity: 0, scale: 0.8 },
+                    visible: {
+                        opacity: 1,
+                        scale: 1,
+                        transition: { delayChildren: 0.2, staggerChildren: 0.1 },
+                    },
+                }}
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    gap: '20px',
+                }}
+            >
                 {filteredCourses.map((course) => (
-                    <div
+                    <motion.div
                         key={course._id}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         style={{
+                            height: '300px',
                             padding: '20px',
                             borderRadius: '10px',
-                            boxShadow: '0 4px 8px rgba(255, 192, 203, 0.5)',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                             textAlign: 'center',
                             width: '250px',
-                            background: 'rgba(255, 243, 245, 1)',
+                            background: 'rgba(15, 32, 39, 0.85)',
+                            color: '#FFFFFF',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
                         }}
                     >
-                        <h3>{course.title}</h3>
-                        <p>{course.description}</p>
-                        <button
+                        <div>
+                            <h3
+                                style={{
+                                    fontSize: '1.2rem',
+                                    marginBottom: '10px',
+                                    height: '75px',
+                                }}
+                            >
+                                {course.title}
+                            </h3>
+                            <p
+                                style={{
+                                    fontSize: '0.9rem',
+                                    color: '#CCCCCC',
+                                    marginBottom: '15px',
+                                    height: '100px',
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                {course.description}
+                            </p>
+                        </div>
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
                             onClick={() => handleEnlist(course._id)}
                             style={{
-                                background: '#FFC1E3',
+                                background: '#1E90FF',
                                 border: 'none',
                                 borderRadius: '5px',
                                 padding: '10px',
                                 cursor: 'pointer',
+                                color: '#FFFFFF',
+                                boxShadow: '0 4px 8px rgba(30, 144, 255, 0.5)',
+                                transition: 'all 0.2s ease-in-out',
                             }}
                         >
                             Enlist
-                        </button>
-                    </div>
+                        </motion.button>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </div>
     );
 };

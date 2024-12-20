@@ -16,7 +16,7 @@ const CourseDetails = () => {
 
     // Function to play button click sound
     const playSound = () => {
-        const audio = new Audio('/audio/ButtonClick.wav'); // Updated path to ButtonClick.wav
+        const audio = new Audio('/audio/ButtonClick.wav');
         audio.play();
     };
 
@@ -62,7 +62,7 @@ const CourseDetails = () => {
 
     const handleModalSubmit = async (submittedAnswers) => {
         try {
-            const response = await Promise.all(
+            await Promise.all(
                 Object.entries(submittedAnswers).map(([questionId, selectedOption]) =>
                     axios.post(
                         `${API_BASE_URL}/api/students/submit-answer`,
@@ -108,63 +108,67 @@ const CourseDetails = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
-                background: 'url(/images/beach.jpg) no-repeat center center',
-                backgroundSize: 'cover',
+                background: 'linear-gradient(145deg, #0F2027, #203A43)',
             }}
         >
             {/* Header Bar */}
-            <nav
+            <motion.nav
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
                 style={{
-                    background: 'linear-gradient(145deg, rgba(255, 223, 237, 0.9), rgba(255, 243, 245, 0.8))',
-                    color: '#000',
+                    background: 'linear-gradient(145deg, #0F2027, #2C5364)',
+                    color: '#FFFFFF',
                     height: '50px',
                     padding: '10px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    boxShadow: '0 8px 16px rgba(255, 192, 203, 1)',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
                 }}
             >
                 <button
                     style={{
-                        border: '1px solid rgba(255, 182, 193, 0.5)',
-                        background: 'rgba(255, 223, 237, 0.85)',
-                        color: '#000',
+                        border: '1px solid rgba(30, 144, 255, 0.5)',
+                        background: 'rgba(32, 58, 67, 0.85)',
+                        color: '#FFFFFF',
                         padding: '5px 15px',
                         borderRadius: '5px',
                         cursor: 'pointer',
                     }}
                     onClick={() => {
-                        playSound(); // Play sound
+                        playSound();
                         navigate('/student-portal/my-courses', { state: { fromTab: 'my-courses' } });
                     }}
                 >
                     Back
                 </button>
-
                 <div style={{ flexGrow: 1, textAlign: 'center', fontSize: '1.75rem' }}>
                     {course.title}
                 </div>
-            </nav>
+            </motion.nav>
 
             <div style={{ display: 'flex', flexGrow: 1, height: 'calc(100vh - 50px)' }}>
                 {/* Left Video List */}
-                <div
+                <motion.div
+                    initial={{ x: -100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
                     style={{
                         width: '300px',
                         minWidth: '300px',
                         overflowY: 'auto',
-                        background: 'rgba(255, 243, 245, 0.0)',
+                        background: 'rgba(32, 58, 67, 0.85)',
                         padding: '10px',
-                        marginTop: '55px',
                     }}
                 >
+                    <h4 style={{ color: '#FFFFFF', height: '45px' }}>Lecture list:</h4>
                     <ul style={{ listStyle: 'none', padding: 0 }}>
                         {course.videos.map((video) => (
                             <li
                                 key={video._id}
                                 onClick={() => {
-                                    playSound(); // Play sound
+                                    playSound();
                                     setCurrentVideo(video);
                                 }}
                                 style={{
@@ -172,10 +176,10 @@ const CourseDetails = () => {
                                     marginBottom: '5px',
                                     borderRadius: '10px',
                                     cursor: 'pointer',
-                                    backgroundColor: currentVideo?._id === video._id ? '#FFC1E3' : '#FFF5F8',
-                                    color: currentVideo?._id === video._id ? '#000' : '#555',
+                                    backgroundColor: currentVideo?._id === video._id ? '#1E90FF' : '#0F2027',
+                                    color: '#FFFFFF',
                                     textDecoration: video.isCompleted ? 'line-through' : 'none',
-                                    boxShadow: '0 4px 8px rgba(255, 192, 203, 0.5)',
+                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                                     height: '85px',
                                 }}
                             >
@@ -183,19 +187,24 @@ const CourseDetails = () => {
                             </li>
                         ))}
                     </ul>
-                </div>
+                </motion.div>
 
                 {/* Main Content */}
-                <div style={{ flexGrow: 1, padding: '20px' }}>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    style={{ flexGrow: 1, padding: '20px' }}
+                >
                     {currentVideo ? (
                         <div>
-                            <h3>{currentVideo.title}</h3>
+                            <h3 style={{ color: '#FFFFFF' }}>{currentVideo.title}</h3>
                             <iframe
                                 style={{
                                     width: '100%',
                                     height: '400px',
                                     borderRadius: '10px',
-                                    boxShadow: '0 8px 16px rgba(255, 192, 203, 1)',
+                                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
                                 }}
                                 src={currentVideo.youtubeLink.replace('watch?v=', 'embed/')}
                                 title={currentVideo.title}
@@ -211,14 +220,14 @@ const CourseDetails = () => {
                                     boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
                                     backgroundColor: currentVideo.questions.length
                                         ? currentVideo.isCompleted
-                                            ? '#E0E0E0'
-                                            : '#FFC1E3'
-                                        : '#FFF3C6',
-                                    color: '#000',
+                                            ? '#AAAAAA'
+                                            : '#1E90FF'
+                                        : '#203A43',
+                                    color: '#FFFFFF',
                                     cursor: currentVideo.isCompleted || !currentVideo.questions.length ? 'not-allowed' : 'pointer',
                                 }}
                                 onClick={() => {
-                                    playSound(); // Play sound
+                                    playSound();
                                     !currentVideo.isCompleted && setShowModal(true);
                                 }}
                                 disabled={currentVideo.isCompleted || !currentVideo.questions.length}
@@ -231,22 +240,25 @@ const CourseDetails = () => {
                             </button>
                         </div>
                     ) : (
-                        <p>No video selected.</p>
+                        <p style={{ color: '#FFFFFF' }}>No video selected.</p>
                     )}
-                </div>
+                </motion.div>
 
                 {/* Right "Your Answers" Section */}
-                <div
+                <motion.div
+                    initial={{ x: 100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
                     style={{
                         width: '400px',
                         overflowY: 'auto',
-                        background: 'rgba(255, 243, 245, 0.9)',
-                        borderLeft: '1px solid rgba(255, 182, 193, 0.5)',
+                        background: 'rgba(15, 32, 39, 0.9)',
+                        borderLeft: '1px solid rgba(30, 144, 255, 0.5)',
                         padding: '10px',
-                        boxShadow: 'inset 0 0 10px rgba(255, 192, 203, 0.5)',
+                        boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.5)',
                     }}
                 >
-                    <h4 style={{ marginTop: '17.5px' }}>Your Answers:</h4>
+                    <h4 style={{ color: '#FFFFFF', height: '45px' }}>Your Answers:</h4>
                     {answers.length > 0 ? (
                         <ul style={{ listStyle: 'none', padding: 0 }}>
                             {answers.map((ans, index) => (
@@ -256,9 +268,9 @@ const CourseDetails = () => {
                                         padding: '10px',
                                         marginBottom: '10px',
                                         borderRadius: '10px',
-                                        backgroundColor: ans.correct ? '#D4F1C6' : '#FFC1C1',
-                                        color: '#000',
-                                        boxShadow: '0 4px 8px rgba(255, 182, 193, 0.5)',
+                                        backgroundColor: ans.correct ? '#2C5364' : '#990000',
+                                        color: '#FFFFFF',
+                                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                                     }}
                                 >
                                     <strong>Q:</strong> {ans.question}
@@ -274,13 +286,13 @@ const CourseDetails = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p>No answers yet.</p>
+                        <p style={{ color: '#FFFFFF' }}>No answers yet.</p>
                     )}
-                </div>
+                </motion.div>
             </div>
 
-            {/* Animated Modal */}
-            <AnimatePresence>
+                        {/* Animated Modal */}
+                        <AnimatePresence>
                 {showModal && currentVideo.questions.length > 0 && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.5, x: '-50%', y: '-50%' }}
@@ -297,9 +309,9 @@ const CourseDetails = () => {
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
-                            backgroundColor: 'rgba(255, 243, 245, 1)',
+                            backgroundColor: 'rgba(20, 20, 30, 0.95)',
                             borderRadius: '10px',
-                            boxShadow: '0 8px 16px rgba(255, 192, 203, 1)',
+                            boxShadow: '0 8px 20px rgba(0, 0, 0, 0.6)',
                             zIndex: 1050,
                             padding: '20px',
                             width: '600px',
@@ -320,3 +332,4 @@ const CourseDetails = () => {
 };
 
 export default CourseDetails;
+

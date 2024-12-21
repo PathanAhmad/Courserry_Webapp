@@ -1,4 +1,5 @@
 import React from 'react';
+import HeartRateBox from '../components/HeartRateBox';
 
 const Dashboard = () => {
     return (
@@ -58,14 +59,7 @@ const Dashboard = () => {
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                     }}
                 ></div>
-                <div
-                    style={{
-                        flex: 3,
-                        background: '#FFA07A',
-                        borderRadius: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                    }}
-                ></div>
+                <HeartRateBox />
             </div>
         </div>
     );

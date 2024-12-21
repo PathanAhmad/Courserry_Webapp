@@ -1,10 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const NotFound = () => {
     const navigate = useNavigate();
-
-    // Determine the user's role from localStorage
     const userRole = localStorage.getItem('role');
 
     const redirectToPortal = () => {
@@ -23,43 +22,51 @@ const NotFound = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#f8f9fa',
+                background: 'linear-gradient(145deg, rgba(15, 32, 39, 1), rgba(32, 58, 67, 0.95))',
                 textAlign: 'center',
+                color: '#FFFFFF',
                 padding: '20px',
             }}
         >
-            <h1 style={{ fontSize: '2.5rem', color: '#dc3545' }}>Page Not Found</h1>
-            <p style={{ fontSize: '1.2rem', color: '#6c757d' }}>
-                Sorry, the page you're looking for doesn't exist.
-            </p>
-            <button
-                onClick={() => navigate(-1)} // Go back to the previous page
-                style={{
-                    margin: '10px',
-                    padding: '10px 20px',
-                    backgroundColor: '#007bff',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                }}
+            {/* Animated Heading */}
+            <motion.h1
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                style={{ fontSize: '3rem', marginBottom: '10px', color: '#1E90FF' }}
             >
-                Go Back
-            </button>
-            <button
-                onClick={redirectToPortal} // Redirect based on role
+                404 - Page Not Found
+            </motion.h1>
+
+            {/* Description */}
+            <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                style={{ fontSize: '1.2rem', color: '#CCCCCC', marginBottom: '30px' }}
+            >
+                Sorry, the page you're looking for doesn't exist or has been moved.
+            </motion.p>
+
+            {/* Button with Hover Animation */}
+            <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={redirectToPortal}
                 style={{
-                    margin: '10px',
-                    padding: '10px 20px',
-                    backgroundColor: '#28a745',
-                    color: '#fff',
+                    padding: '12px 25px',
+                    backgroundColor: '#1E90FF',
                     border: 'none',
                     borderRadius: '5px',
+                    color: '#FFFFFF',
+                    fontSize: '1rem',
                     cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(30, 144, 255, 0.5)',
+                    transition: 'all 0.3s ease-in-out',
                 }}
             >
                 Go to Dashboard
-            </button>
+            </motion.button>
         </div>
     );
 };

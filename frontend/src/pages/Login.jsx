@@ -35,9 +35,9 @@ const Login = () => {
             localStorage.setItem('role', role);
 
             if (role === 'admin') {
-                navigate('/admin-portal/dashboard');
+                navigate('/admin-portal');
             } else if (role === 'student') {
-                navigate('/student-portal/dashboard');
+                navigate('/student-portal');
             } else {
                 alert('Unknown role. Please contact support.');
             }

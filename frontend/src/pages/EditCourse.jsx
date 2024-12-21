@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import API_BASE_URL from '../config'; // Import API_BASE_URL
+import Loading from '../components/Loading';
 
 const EditCourse = () => {
     const { courseId } = useParams();
@@ -100,7 +101,7 @@ const EditCourse = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loading />;
     if (!course) return <div>Course not found.</div>;
 
     return (

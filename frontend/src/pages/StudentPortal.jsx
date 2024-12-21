@@ -6,6 +6,7 @@ import Dashboard from './Dashboard';
 import NotFound from './NotFound';
 import axios from 'axios';
 import API_BASE_URL from '../config';
+import Loading from '../components/Loading';
 
 const StudentPortal = () => {
     const location = useLocation();
@@ -90,7 +91,7 @@ const StudentPortal = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading />;
     }
 
     return (

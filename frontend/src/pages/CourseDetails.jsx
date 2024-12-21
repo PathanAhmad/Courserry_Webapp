@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import QuestionModal from '../components/QuestionModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import API_BASE_URL from '../config';
+import Loading from '../components/Loading';
 
 const CourseDetails = () => {
     const { courseId } = useParams();
@@ -97,7 +98,7 @@ const CourseDetails = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loading />;
     if (!course) return <div>Course not found.</div>;
 
     return (

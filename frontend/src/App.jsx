@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import RedirectingScreen from './components/RedirectingScreen'; // Import the RedirectingScreen component
 
 const App = () => {
     const navigate = useNavigate();
+    const [redirecting, setRedirecting] = useState(true); // Track redirection status
 
     useEffect(() => {
         const validateToken = async () => {
@@ -39,15 +41,21 @@ const App = () => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('role');
                 navigate('/login');
+            } finally {
+                setRedirecting(false);  // Hide redirecting screen after redirect
             }
         };
 
         validateToken();
     }, [navigate]);
 
+    if (redirecting) {
+        return <RedirectingScreen />;  // Show RedirectingScreen during token validation
+    }
+
     return (
-        <div className="container text-center mt-5">
-            <h1 className="text-primary">Redirecting based on role...</h1>
+        <div>
+            {/* Main App Content */}
         </div>
     );
 };

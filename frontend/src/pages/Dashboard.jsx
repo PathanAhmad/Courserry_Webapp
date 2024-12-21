@@ -19,9 +19,10 @@ const Dashboard = () => {
                 <div
                     style={{
                         flex: 3,
-                        background: '#FFC1E3',
+                        background: '(255, 193, 227, 0)',
+                        
                         borderRadius: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0)',
                     }}
                 ></div>
                 <div

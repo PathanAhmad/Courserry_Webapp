@@ -27,18 +27,15 @@ const DailyLogModal = ({ onClose, onSave }) => {
                     'Content-Type': 'application/json'
                 }
             });
+            console.log('Response:', response.data);
             alert(response.data.message || 'Log saved successfully');
             onSave(logData);
             onClose();
         } catch (error) {
-            console.error('Error Response:', error);
-            if (error.response?.status === 400) {
-                alert('You have already submitted your log for today.');
-            } else {
-                alert(error.response?.data?.message || 'Failed to save log');
-            }
+            console.error('Error Response:', error);  // More verbose error log
+            alert(error.response?.data?.message || 'Failed to save log');
         }
-    };    
+    };
 
     const renderSliderLabels = (labels) => (
         <div style={labelContainerStyle}>
@@ -172,8 +169,9 @@ const DailyLogModal = ({ onClose, onSave }) => {
 // Modal Styles
 const overlayStyle = {
     position: 'fixed',
-    top: 0,
-    left: 0,
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',  // Centering
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',

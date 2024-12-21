@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import ColorSlider from './ColorSlider.jsx'
 
 const DailyLogModal = ({ onClose, onSave }) => {
     const [logData, setLogData] = useState({
-        mood: 3,
-        social: 3,
-        stress: 3,
-        sleepQuality: 3,
+        mood: 0,
+        social: 0,
+        stress: 0,
+        sleepQuality: 0,
         sleepDuration: 8,
         date: new Date().toISOString().split('T')[0]
     });
@@ -17,22 +18,29 @@ const DailyLogModal = ({ onClose, onSave }) => {
     };
 
     const handleSubmit = async () => {
+        const updatedLogData = { ...logData };
+    
+        // Round or adjust if necessary
+        updatedLogData.mood = parseFloat(logData.mood);
+        updatedLogData.social = parseFloat(logData.social);
+        updatedLogData.stress = parseFloat(logData.stress);
+        updatedLogData.sleepQuality = parseFloat(logData.sleepQuality);
+    
         try {
             const response = await axios({
                 method: 'POST',
                 url: `${import.meta.env.VITE_API_URL}/api/logs/save`,
-                data: logData,
+                data: updatedLogData,
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 }
             });
-            console.log('Response:', response.data);
             alert(response.data.message || 'Log saved successfully');
-            onSave(logData);
+            onSave(updatedLogData);  // Pass updated data
             onClose();
         } catch (error) {
-            console.error('Error Response:', error);  // More verbose error log
+            console.error('Error Response:', error);
             alert(error.response?.data?.message || 'Failed to save log');
         }
     };
@@ -82,13 +90,11 @@ const DailyLogModal = ({ onClose, onSave }) => {
                     <div style={sliderContainerStyle}>
                         <label>Mood State</label>
                         {renderSliderLabels(['Very Negative', 'Negative', 'Mildly Negative', 'Neutral', 'Mildly Positive', 'Positive', 'Very Positive'])}
-                        <input
-                            type="range"
-                            min="0"
-                            max="6"
+                        <ColorSlider
                             value={logData.mood}
-                            onChange={(e) => handleChange('mood', parseInt(e.target.value))}
-                            style={sliderStyle}
+                            min={-1}
+                            max={1}
+                            onChange={(value) => handleChange('mood', parseFloat(value.toFixed(2)))}  // Round to 2 decimals
                         />
                     </div>
 
@@ -96,13 +102,11 @@ const DailyLogModal = ({ onClose, onSave }) => {
                     <div style={sliderContainerStyle}>
                         <label>Social Interaction Energy</label>
                         {renderSliderLabels(['Very Low', 'Low', 'Mildly Low', 'Neutral', 'Mildly High', 'High', 'Very High'])}
-                        <input
-                            type="range"
-                            min="0"
-                            max="6"
+                        <ColorSlider
                             value={logData.social}
-                            onChange={(e) => handleChange('social', parseInt(e.target.value))}
-                            style={sliderStyle}
+                            min={-1}
+                            max={1}
+                            onChange={(value) => handleChange('social', parseFloat(value.toFixed(2)))}  // 2-decimal precision
                         />
                     </div>
 
@@ -110,13 +114,11 @@ const DailyLogModal = ({ onClose, onSave }) => {
                     <div style={sliderContainerStyle}>
                         <label>Environmental Stress</label>
                         {renderSliderLabels(['Very Low', 'Low', 'Mildly Low', 'Neutral', 'Mildly High', 'High', 'Very High'])}
-                        <input
-                            type="range"
-                            min="0"
-                            max="6"
+                        <ColorSlider
                             value={logData.stress}
-                            onChange={(e) => handleChange('stress', parseInt(e.target.value))}
-                            style={sliderStyle}
+                            min={-1}
+                            max={1}
+                            onChange={(value) => handleChange('stress', parseFloat(value.toFixed(2)))}  // Ensure precision
                         />
                     </div>
 
@@ -124,13 +126,11 @@ const DailyLogModal = ({ onClose, onSave }) => {
                     <div style={sliderContainerStyle}>
                         <label>Sleep Quality</label>
                         {renderSliderLabels(['Very Low', 'Low', 'Mildly Low', 'Neutral', 'Mildly High', 'High', 'Very High'])}
-                        <input
-                            type="range"
-                            min="0"
-                            max="6"
+                        <ColorSlider
                             value={logData.sleepQuality}
-                            onChange={(e) => handleChange('sleepQuality', parseInt(e.target.value))}
-                            style={sliderStyle}
+                            min={-1}
+                            max={1}
+                            onChange={(value) => handleChange('sleepQuality', parseFloat(value.toFixed(2)))}  // Precision fix
                         />
                     </div>
 

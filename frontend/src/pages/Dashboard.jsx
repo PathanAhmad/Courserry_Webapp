@@ -1,5 +1,6 @@
 import React from 'react';
 import HeartRateBox from '../components/HeartRateBox';
+import DailyLogBox from '../components/DailyLogBox';
 
 const Dashboard = () => {
     return (
@@ -43,14 +44,7 @@ const Dashboard = () => {
 
             {/* Second row */}
             <div style={{ display: 'flex', gap: '20px', height: '42.5%' }}>
-                <div
-                    style={{
-                        flex: 4,
-                        background: '#ADD8E6',
-                        borderRadius: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                    }}
-                ></div>
+                <DailyLogBox />
                 <div
                     style={{
                         flex: 5,

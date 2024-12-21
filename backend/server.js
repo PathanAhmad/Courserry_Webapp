@@ -6,6 +6,7 @@ const path = require('path'); // Import path module
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes.js');
 const studentRoutes = require('./routes/studentRoutes');
+const logRoutes = require('./routes/logRoutes');
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/students', studentRoutes);
+app.use('/api/logs', logRoutes);
 
 // Serve static files for the React app
 app.use(express.static(path.join(__dirname, 'dist')));

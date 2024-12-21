@@ -52,7 +52,7 @@ const HeartRateBox = () => {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    animation: 'pulse 1s infinite linear',  // Switch to linear for ultra-smooth pulse
+                    animation: 'pulse 1.45s infinite linear',  // Switch to linear for ultra-smooth pulse
                     zIndex: 0,
                 }}
             ></div>

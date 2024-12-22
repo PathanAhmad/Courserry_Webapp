@@ -4,10 +4,19 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '../styles/auth.css';
 import API_BASE_URL from '../config'; // Import API_BASE_URL
+import TypingTextBox from '../components/TypingTextBox';
+
+
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [isLoading, setIsLoading] = useState(false);  // Add loading state
+    const [showTextA, setShowTextA] = useState(false);  // Text A visibility
+    const [showTextB, setShowTextB] = useState(false);  // Text B visibility
+    const [showTextC, setShowTextC] = useState(false);  // Text B visibility
+    const [showTextD, setShowTextD] = useState(false);  // Text B visibility
+    const [showTextE, setShowTextE] = useState(false);  // Text B visibility
+    const [showTextF, setShowTextF] = useState(false);  // Text B visibility
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,6 +24,15 @@ const Login = () => {
         if (token) {
             navigate('/');
         }
+
+        setTimeout(() => setShowTextA(true), 1000);
+        setTimeout(() => setShowTextB(true), 2000);
+        setTimeout(() => setShowTextC(true), 3500);
+
+        setTimeout(() => setShowTextD(true), 4500);
+        setTimeout(() => setShowTextE(true), 5500);
+        setTimeout(() => setShowTextF(true), 6500);
+
     }, [navigate]);
 
     const handleChange = (e) => {
@@ -47,6 +65,48 @@ const Login = () => {
 
     return (
         <div className="auth-page">
+            <div
+            style={{
+                position: 'absolute',  // Take the element out of the normal flow
+                top: '10px',           // Position from the top
+                left: '10px',          // Position from the left
+                zIndex: 1000,          // Ensure it stays on top of other elements
+                pointerEvents: 'none', // Prevents interaction, makes it ghost-like
+                paddingTop: '250px',
+                paddingLeft: '100px'
+            }}
+            >
+            {showTextA && (
+                    <TypingTextBox text="Welcome" speed={100} disappearAfter={3000}/>
+                )}
+            {showTextB && (
+                    <TypingTextBox text="to" speed={100} disappearAfter={3000}/>
+                )}
+            {showTextC && (
+                    <TypingTextBox text="SPARK" gradient={true} speed={100} size="7rem"/>
+                )}
+            </div>
+            <div
+            style={{
+                position: 'absolute',  // Take the element out of the normal flow
+                top: '10px',           // Position from the top
+                right: '10px',          // Position from the left
+                zIndex: 1000,          // Ensure it stays on top of other elements
+                pointerEvents: 'none', // Prevents interaction, makes it ghost-like
+                paddingTop: '250px',
+                paddingRight: '100px'
+            }}
+            >
+            {showTextD && (
+                    <TypingTextBox text="A Project" speed={100}/>
+                )}
+            {showTextE && (
+                    <TypingTextBox text="by" speed={100}/>
+                )}
+            {showTextF && (
+                    <TypingTextBox text="Sarah Undre" gradient={true} speed={100}/>
+                )}
+            </div>
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}

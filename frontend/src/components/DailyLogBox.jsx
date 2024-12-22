@@ -42,7 +42,7 @@ const DailyLogBox = () => {
         <>
             <div
                 style={{
-                    flex: 4,
+                    flex: 2,
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',

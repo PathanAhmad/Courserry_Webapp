@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Import framer-motion for animations
+import { motion } from 'framer-motion';
 import axios from 'axios';
 import API_BASE_URL from '../config';
 
-const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {} }) => {
+const MyCourses = ({ 
+    coursesProp = [], 
+    progressDataProp = {}, 
+    scoreDataProp = {}, 
+    onUnenrollCallback 
+}) => {
     const [courses, setCourses] = useState(coursesProp);
     const [progressData, setProgressData] = useState(progressDataProp);
     const [scoreData, setScoreData] = useState(scoreDataProp);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,6 +23,15 @@ const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {}
         setScoreData(scoreDataProp);
     }, [coursesProp, progressDataProp, scoreDataProp]);
 
+    // Keep localStorage in sync
+    useEffect(() => {
+        if (courses.length > 0) {
+            localStorage.setItem('enrolledCourses', JSON.stringify(courses));
+        } else {
+            localStorage.removeItem('enrolledCourses'); 
+        }
+    }, [courses]);
+
     const handleUnenroll = async (courseId) => {
         try {
             await axios.post(
@@ -25,26 +40,68 @@ const MyCourses = ({ coursesProp = [], progressDataProp = {}, scoreDataProp = {}
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
             alert('Successfully unenrolled!');
-            setCourses((prevCourses) => prevCourses.filter((course) => course._id !== courseId));
+
+            // Remove lastCourse info if it matches
+            const lastCourseId = localStorage.getItem('lastCourseId');
+            if (lastCourseId === courseId) {
+                localStorage.removeItem('lastCourseId');
+                localStorage.removeItem('lastCourseTitle');
+                localStorage.removeItem('lastCourseProgress');
+            }
+
+            // Let the parent know we unenrolled
+            if (onUnenrollCallback) {
+                onUnenrollCallback(courseId);
+            }
+
+            // Update local state
+            setCourses(prev => prev.filter(course => course._id !== courseId));
         } catch (error) {
             console.error('Error unenrolling:', error.response?.data || error.message);
             alert(error.response?.data?.message || 'Failed to unenroll');
         }
     };
 
-    if (!courses.length)
+    // THEMED FALLBACK FOR NO COURSES
+    if (!courses.length) {
         return (
-            <div
+            <motion.div
                 style={{
-                    textAlign: 'center',
                     padding: '20px',
-                    color: '#AAAAAA',
-                    fontSize: '1.2rem',
+                    background: 'rgba(15, 32, 39, 0.9)',
+                    borderRadius: '15px',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                    textAlign: 'center',
+                    color: '#FFFFFF',
                 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
             >
-                No courses enrolled yet.
-            </div>
+                {/* <h2 style={{ fontSize: '2rem', marginBottom: '15px' }}>
+                    No Courses Enlisted
+                </h2> */}
+                <p style={{ fontSize: '1.2rem', marginBottom: '20px' }}>
+                    Looks like you haven't enlisted in any course yet. Ready to explore?
+                </p>
+                <button
+                    onClick={() => navigate('/student-portal/browse-courses')}
+                    style={{
+                        background: '#1E90FF',
+                        border: 'none',
+                        borderRadius: '8px',
+                        color: '#FFFFFF',
+                        fontSize: '1rem',
+                        padding: '10px 20px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 8px rgba(30, 144, 255, 0.3)',
+                    }}
+                >
+                    Browse Courses
+                </button>
+            </motion.div>
         );
+    }
 
     return (
         <motion.div

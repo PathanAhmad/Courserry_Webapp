@@ -30,15 +30,28 @@ const CourseDetails = () => {
                 );
                 setCourse(response.data.course);
                 setCurrentVideo(response.data.course.videos[0]);
+                
+                // Store last accessed course
+                localStorage.setItem('lastCourseId', courseId);
+                localStorage.setItem('lastCourseTitle', response.data.course.title);  // Save course title
+        
+                // Calculate progress (completed videos / total videos)
+                const completedVideos = response.data.course.videos.filter(v => v.isCompleted).length;
+                const totalVideos = response.data.course.videos.length;
+                const calculatedProgress = ((completedVideos / totalVideos) * 100).toFixed(2);
+                
+                // Store progress
+                localStorage.setItem('lastCourseProgress', calculatedProgress);
+        
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching course details:', error.response?.data || error.message);
                 setLoading(false);
             }
-        };
-
+        };        
+    
         fetchCourseDetails();
-    }, [courseId]);
+    }, [courseId]);    
 
     const fetchAnswers = async (videoId) => {
         try {

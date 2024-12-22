@@ -32,6 +32,8 @@ const StudentPortal = () => {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             const enlistedCourses = myCoursesResponse.data.enlistedCourses;
+            // Immediately set localStorage here
+            localStorage.setItem('enrolledCourses', JSON.stringify(enlistedCourses));
 
             const progressRequests = enlistedCourses.map((course) =>
                 axios.get(`${API_BASE_URL}/api/students/progress/${course._id}`, {
@@ -71,6 +73,16 @@ const StudentPortal = () => {
 
     const refreshData = () => {
         fetchData();
+    };
+
+    // 1) This function updates courses in the parent when user unenrolls
+    const handleUnenrollInParent = (courseId) => {
+        setCourses((prev) => {
+            const updated = prev.filter((c) => c._id !== courseId);
+            // Keep localStorage in sync (optional)
+            localStorage.setItem('enrolledCourses', JSON.stringify(updated));
+            return updated;
+        });
     };
 
     useEffect(() => {
@@ -207,7 +219,13 @@ const StudentPortal = () => {
 
             <div style={{ flexGrow: 1, padding: '20px' }}>
                 <Routes>
-                    <Route path="dashboard" element={<Dashboard />} />
+                    {/* Pass 'courses' and 'progressData' to Dashboard */}
+                    <Route 
+                        path="dashboard" 
+                        element={<Dashboard courses={courses} progressData={progressData} />} 
+                    />
+
+                    {/* Pass 'coursesProp' & 'onUnenrollCallback' to MyCourses */}
                     <Route
                         path="my-courses"
                         element={
@@ -215,6 +233,7 @@ const StudentPortal = () => {
                                 coursesProp={courses}
                                 progressDataProp={progressData}
                                 scoreDataProp={scoreData}
+                                onUnenrollCallback={handleUnenrollInParent} 
                             />
                         }
                     />

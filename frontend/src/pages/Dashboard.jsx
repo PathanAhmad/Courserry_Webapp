@@ -1,8 +1,9 @@
 import React from 'react';
 import HeartRateBox from '../components/HeartRateBox';
 import DailyLogBox from '../components/DailyLogBox';
+import ResumeCourseCTA from '../components/ResumeCourseCTA';
 
-const Dashboard = () => {
+const Dashboard = ({ courses, progressData }) => {
     return (
         <div
             style={{
@@ -20,11 +21,11 @@ const Dashboard = () => {
                     style={{
                         flex: 3,
                         background: '(255, 193, 227, 0)',
-                        
                         borderRadius: '10px',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0)',
                     }}
                 ></div>
+                
                 <div
                     style={{
                         flex: 5,
@@ -33,14 +34,21 @@ const Dashboard = () => {
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                     }}
                 ></div>
+
                 <div
                     style={{
                         flex: 4,
-                        background: '#98FB98',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'transparent',
                         borderRadius: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                     }}
-                ></div>
+                >
+                    {/* Pass "courses" & "progressData" to ResumeCourseCTA */}
+                    <ResumeCourseCTA courses={courses} progressData={progressData} />
+                </div>
             </div>
 
             {/* Second row */}

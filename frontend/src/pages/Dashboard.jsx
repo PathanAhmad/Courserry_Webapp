@@ -18,9 +18,9 @@ const Dashboard = ({ courses, progressData }) => {
         >
             {/* First row */}
             <div style={{ display: 'flex', gap: '20px', height: '42.5%' }}>
-                <div style={{ flex: 3 }}>
+                {/* <div style={{ flex: 3 }}>
                     <TypingTextBox text="I dunno what to put here. Got anything in mind?" speed={120} />
-                </div>
+                </div> */}
                 <div
                     style={{
                         flex: 2,
@@ -51,7 +51,7 @@ const Dashboard = ({ courses, progressData }) => {
 
             {/* Second row */}
             <div style={{ display: 'flex', gap: '20px', height: '42.5%' }}>
-                <HeartRateBox />
+                {/* <HeartRateBox /> */}
                 <DailyLogBox />          
                 <div
                     style={{

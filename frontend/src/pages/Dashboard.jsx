@@ -42,6 +42,7 @@ const Dashboard = ({ courses, progressData }) => {
                         background: '#FFD700',
                         borderRadius: '10px',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        height: '607.5px'
                     }}
                 >Graph</div>
 
@@ -55,11 +56,11 @@ const Dashboard = ({ courses, progressData }) => {
                 <div
                     style={{
                         flex: 5,
-                        background: '#FFB6C1',
+                        background: 'transparent',
                         borderRadius: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0)',
                     }}
-                >Graph</div>
+                ></div>
             </div>
         </div>
     );

@@ -27,7 +27,7 @@ const Login = () => {
 
         setTimeout(() => setShowTextA(true), 1000);
         setTimeout(() => setShowTextB(true), 2000);
-        setTimeout(() => setShowTextC(true), 3500);
+        setTimeout(() => setShowTextC(true), 4000);
 
         setTimeout(() => setShowTextD(true), 5500);
         setTimeout(() => setShowTextE(true), 6500);
@@ -77,10 +77,10 @@ const Login = () => {
             }}
             >
             {showTextA && (
-                    <TypingTextBox text="Welcome" speed={100} disappearAfter={3000}/>
+                    <TypingTextBox text="Welcome" speed={50} disappearAfter={750}/>
                 )}
             {showTextB && (
-                    <TypingTextBox text="to" speed={100} disappearAfter={3000}/>
+                    <TypingTextBox text="to" speed={50} disappearAfter={750}/>
                 )}
             {showTextC && (
                     <TypingTextBox text="SPARK" gradient={true} speed={100} size="7rem"/>

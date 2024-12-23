@@ -29,9 +29,9 @@ const Login = () => {
         setTimeout(() => setShowTextB(true), 2000);
         setTimeout(() => setShowTextC(true), 3500);
 
-        setTimeout(() => setShowTextD(true), 4500);
-        setTimeout(() => setShowTextE(true), 5500);
-        setTimeout(() => setShowTextF(true), 6500);
+        setTimeout(() => setShowTextD(true), 5500);
+        setTimeout(() => setShowTextE(true), 6500);
+        setTimeout(() => setShowTextF(true), 7500);
 
     }, [navigate]);
 

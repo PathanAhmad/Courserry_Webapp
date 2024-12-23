@@ -1,6 +1,8 @@
 import React from 'react';
 import HeartRateBox from '../components/HeartRateBox';
 import DailyLogBox from '../components/DailyLogBox';
+import ResumeCourseCTA from '../components/ResumeCourseCTA';
+import TypingTextBox from '../components/TypingTextBox';
 
 const Dashboard = ({ courses, progressData }) => {
     return (
@@ -21,13 +23,19 @@ const Dashboard = ({ courses, progressData }) => {
                 </div>
                 <div
                     style={{
-                        flex: 3,
-                        background: '(255, 193, 227, 0)',
-                        
+                        flex: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'transparent',
                         borderRadius: '10px',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                     }}
-                ></div>
+                >
+                    {/* Pass "courses" & "progressData" to ResumeCourseCTA */}
+                    <ResumeCourseCTA courses={courses} progressData={progressData} />
+                </div>
+                
                 <div
                     style={{
                         flex: 5,
@@ -35,15 +43,9 @@ const Dashboard = ({ courses, progressData }) => {
                         borderRadius: '10px',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                     }}
-                ></div>
-                <div
-                    style={{
-                        flex: 4,
-                        background: '#98FB98',
-                        borderRadius: '10px',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                    }}
-                ></div>
+                >Graph</div>
+
+                
             </div>
 
             {/* Second row */}

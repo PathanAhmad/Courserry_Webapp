@@ -193,6 +193,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
           transition={{ delay: 0.3 }}
           style={{
             margin: 0,
+            marginTop: '5px',
             fontSize: '2rem',
             textShadow: '0 3px 6px rgba(0, 0, 0, 0.5)',
             fontWeight: 600,
@@ -232,7 +233,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
         <div
           style={{
             width: '100%',
-            height: '12px',
+            height: '5px',
             background: 'rgba(0,0,0,0.3)',
             borderRadius: '6px',
             overflow: 'hidden',
@@ -271,6 +272,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
           whileHover={{ scale: 1.07 }}
           style={{
             marginTop: '10px',
+            marginBottom: '15px',
             padding: '10px 24px',
             backgroundColor: '#324A5E',
             color: '#fff',

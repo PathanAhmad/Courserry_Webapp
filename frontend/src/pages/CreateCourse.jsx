@@ -54,7 +54,7 @@ const CreateCourse = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${API_BASE_URL}/api/courses`, {
+            const response = await fetch(`${API_BASE_URL}/api/courses/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

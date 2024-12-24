@@ -53,29 +53,83 @@ const CreateCourse = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage(null);
+    
         try {
-            const response = await fetch(`${API_BASE_URL}/api/courses/create`, {
+            // 1. Create the Course
+            const courseResponse = await fetch(`${API_BASE_URL}/api/courses/create`, {  // Correct endpoint
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify(course),
+                body: JSON.stringify({
+                    title: course.title,
+                    description: course.description,
+                }),
             });
-            const data = await response.json();
-            if (response.ok) {
-                setMessage({ type: 'success', text: 'Course created successfully!' });
-                setCourse({
-                    title: '',
-                    description: '',
-                    videos: [],
-                }); // Reset form
-            } else {
-                setMessage({ type: 'error', text: data.message || 'Failed to create course.' });
+    
+            const courseData = await courseResponse.json();
+            if (!courseResponse.ok) {
+                throw new Error(courseData.message || 'Failed to create course.');
             }
+    
+            const courseId = courseData.course._id;
+    
+            // 2. Add Videos to the Course
+            for (const video of course.videos) {
+                const videoResponse = await fetch(`${API_BASE_URL}/api/courses/add-video`, {  // Correct endpoint
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({
+                        courseId,
+                        title: video.title,
+                        youtubeLink: video.youtubeLink,
+                    }),
+                });
+    
+                const videoData = await videoResponse.json();
+                if (!videoResponse.ok) {
+                    throw new Error(videoData.message || 'Failed to add video.');
+                }
+    
+                const videoId = videoData.course.videos[videoData.course.videos.length - 1]._id;
+    
+                // 3. Add Questions to Each Video
+                for (const question of video.questions) {
+                    const questionResponse = await fetch(`${API_BASE_URL}/api/courses/add-question`, {  // Correct endpoint
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                        body: JSON.stringify({
+                            courseId,
+                            videoId,
+                            questionText: question.questionText,
+                            options: question.options,
+                            correctOption: question.correctOption,
+                            explanation: question.explanation,
+                        }),
+                    });
+    
+                    const questionData = await questionResponse.json();
+                    if (!questionResponse.ok) {
+                        throw new Error(questionData.message || 'Failed to add question.');
+                    }
+                }
+            }
+    
+            // Success Message
+            setMessage({ type: 'success', text: 'Course, videos, and questions added successfully!' });
+            setCourse({ title: '', description: '', videos: [] });  // Reset form
+    
         } catch (error) {
-            setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
-            console.error('Error creating course:', error);
+            setMessage({ type: 'error', text: error.message || 'An error occurred. Please try again.' });
+            console.error('Error during submission:', error);
         }
     };
 

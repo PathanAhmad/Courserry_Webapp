@@ -85,7 +85,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
             color: '#FFFFFF',
             textAlign: 'center',
             maxWidth: '450px',
-            padding: '40px 20px',
+            // padding: '40px 20px',
             display: 'flex',
             flexDirection: 'column',
             gap: '15px',
@@ -193,7 +193,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
           transition={{ delay: 0.3 }}
           style={{
             margin: 0,
-            marginTop: '5px',
+            marginTop: '25px',
             fontSize: '2rem',
             textShadow: '0 3px 6px rgba(0, 0, 0, 0.5)',
             fontWeight: 600,
@@ -271,8 +271,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
           transition={{ delay: 1.2 }}
           whileHover={{ scale: 1.07 }}
           style={{
-            marginTop: '10px',
-            marginBottom: '15px',
+            marginBottom: '30px',
             padding: '10px 24px',
             backgroundColor: '#324A5E',
             color: '#fff',

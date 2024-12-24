@@ -13,13 +13,20 @@ export default defineConfig({
     hmr: {
       overlay: true,
     },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',  // Backend URL
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api')  // Ensure /api is preserved
+      },
+    },
   },
   build: {
     outDir: 'dist', // Ensure your output directory is correctly named
   },
   base: '/', // Set the base path for your app
   preview: {
-    // Add this section for preview fallback
     port: 3000,
     open: true,
   },

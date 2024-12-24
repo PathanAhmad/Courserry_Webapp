@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes.js');
 const studentRoutes = require('./routes/studentRoutes');
 const logRoutes = require('./routes/logRoutes');
+const pythonRoutes = require('./routes/pythonRoutes');
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/logs', logRoutes);
+app.use('/api/python', pythonRoutes);
+
 
 // Serve static files for the React app
 app.use(express.static(path.join(__dirname, 'dist')));

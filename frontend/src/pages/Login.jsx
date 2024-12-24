@@ -29,10 +29,6 @@ const Login = () => {
         setTimeout(() => setShowTextB(true), 2000);
         setTimeout(() => setShowTextC(true), 4000);
 
-        setTimeout(() => setShowTextD(true), 5500);
-        setTimeout(() => setShowTextE(true), 6500);
-        setTimeout(() => setShowTextF(true), 7500);
-
     }, [navigate]);
 
     const handleChange = (e) => {
@@ -83,28 +79,7 @@ const Login = () => {
                     <TypingTextBox text="to" speed={50} disappearAfter={750}/>
                 )}
             {showTextC && (
-                    <TypingTextBox text="SPARK" gradient={true} speed={100} size="7rem"/>
-                )}
-            </div>
-            <div
-            style={{
-                position: 'absolute',  // Take the element out of the normal flow
-                top: '10px',           // Position from the top
-                right: '10px',          // Position from the left
-                zIndex: 1000,          // Ensure it stays on top of other elements
-                pointerEvents: 'none', // Prevents interaction, makes it ghost-like
-                paddingTop: '250px',
-                paddingRight: '100px'
-            }}
-            >
-            {showTextD && (
-                    <TypingTextBox text="A Project" speed={100}/>
-                )}
-            {showTextE && (
-                    <TypingTextBox text="by" speed={100}/>
-                )}
-            {showTextF && (
-                    <TypingTextBox text="Sarah Undre" gradient={true} speed={100}/>
+                    <TypingTextBox text="Spark.OS" gradient={true} speed={100} size="5rem"/>
                 )}
             </div>
             <motion.div

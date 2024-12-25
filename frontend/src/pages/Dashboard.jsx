@@ -81,12 +81,13 @@ const Dashboard = ({ courses, progressData }) => {
                             background: 'transparent',
                             borderRadius: '10px',
                             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                            height: '49.5%'
                         }}
                     >
                         <ResumeCourseCTA courses={courses} progressData={progressData} />
                     </div>
                     {/* Apply flex: 1 to make it equal */}
-                    <div style={{ flex: 1, }}>
+                    <div style={{ flex: 1 }}>
                         <DailyLogBox />
                     </div>
                     <HeartRateBox />

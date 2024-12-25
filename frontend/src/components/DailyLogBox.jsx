@@ -54,7 +54,8 @@ const DailyLogBox = () => {
                     cursor: hasSubmittedToday ? 'not-allowed' : 'pointer',
                     opacity: hasSubmittedToday ? 0.6 : 1,
                     transform: hasSubmittedToday ? 'none' : 'scale(1)',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    paddingTop: '10px'
                 }}
                 onMouseEnter={(e) => {
                     if (!hasSubmittedToday) {

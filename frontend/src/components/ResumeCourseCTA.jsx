@@ -6,15 +6,12 @@ import { FaPlay } from 'react-icons/fa';
 const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
   const navigate = useNavigate();
 
-  // Reads from localStorage
   const lastCourseId = localStorage.getItem('lastCourseId');
   const lastCourseTitle = localStorage.getItem('lastCourseTitle') || 'Your Last Course';
   const progress = parseFloat(localStorage.getItem('lastCourseProgress')) || 0;
 
-  // Has any courses?
   const userHasCourses = courses.length > 0;
 
-  // Animation variants for fade+slide
   const fadeVariants = {
     hidden: { opacity: 0, y: 15 },
     visible: {
@@ -24,7 +21,6 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
     },
   };
 
-  // Shared container style for all states
   const containerStyle = {
     flex: 4,
     height: '100%',
@@ -45,14 +41,11 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
     backgroundBlendMode: 'overlay',
   };
 
-  // ======= Fallback States =======
   if (!lastCourseId) {
-    // If user has courses but no recent visits vs. no courses at all
     const fallbackHeading = userHasCourses
       ? "Your courses are left wondering where you left off to."
-      : "Haven't enlisted yet?.";
-
-    // **Here’s the new dynamic sub-text**:
+      : "Haven't enlisted yet?";
+      
     const fallbackSubtext = userHasCourses
       ? "Click here to unsadden them. Click : ( -> : ) ."
       : "No problem. Here's the magic button!";
@@ -85,13 +78,13 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
             color: '#FFFFFF',
             textAlign: 'center',
             maxWidth: '450px',
-            // padding: '40px 20px',
+            padding: '40px 20px',
             display: 'flex',
             flexDirection: 'column',
+            alignItems: 'center',
             gap: '15px',
           }}
         >
-          {/* Animated heading */}
           <motion.h2
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -106,7 +99,6 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
             {fallbackHeading}
           </motion.h2>
 
-          {/* Updated sub-text for flair (different for no courses vs. has courses) */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -120,7 +112,6 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
             {fallbackSubtext}
           </motion.p>
 
-          {/* Button */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -146,7 +137,6 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
     );
   }
 
-  // ======= Main CTA (User has visited a course) =======
   const handleResumeCourse = () => {
     if (lastCourseId) {
       navigate(`/my-courses/${lastCourseId}`);
@@ -186,7 +176,6 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
           gap: '15px',
         }}
       >
-        {/* Animated heading */}
         <motion.h2
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -228,66 +217,6 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
         >
           {lastCourseTitle}
         </motion.h3>
-
-        {/* Progress Bar */}
-        <div
-          style={{
-            width: '100%',
-            height: '5px',
-            background: 'rgba(0,0,0,0.3)',
-            borderRadius: '6px',
-            overflow: 'hidden',
-          }}
-        >
-          <motion.div
-            initial={{ width: '0%' }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.8 }}
-            style={{
-              height: '100%',
-              background: '#FFD700',
-            }}
-          />
-        </div>
-
-        {/* Progress Percentage */}
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          style={{
-            fontSize: '1rem',
-            color: '#FFD700',
-            fontWeight: '500',
-          }}
-        >
-          {progress.toFixed(2)}% Complete
-        </motion.span>
-
-        {/* Resume Button */}
-        <motion.button
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          whileHover={{ scale: 1.07 }}
-          style={{
-            marginBottom: '30px',
-            padding: '10px 24px',
-            backgroundColor: '#324A5E',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
-          }}
-        >
-          <FaPlay size={16} />
-          Resume Course
-        </motion.button>
       </div>
     </motion.div>
   );

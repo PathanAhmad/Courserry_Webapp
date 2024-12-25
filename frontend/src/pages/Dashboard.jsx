@@ -14,7 +14,7 @@ const Dashboard = ({ courses, progressData }) => {
     const [startDate, setStartDate] = useState(new Date('2024-01-01'));
     const [endDate, setEndDate] = useState(new Date('2024-12-31'));
     const [plotType, setPlotType] = useState('daily');
-    const [selectedMonth, setSelectedMonth] = useState('1');  // Default to January
+    const [selectedMonth, setSelectedMonth] = useState('1');
 
     const { graphData } = useGraphData(activeGraph, startDate, endDate, plotType, selectedMonth);
     const loading = graphData.length === 0;
@@ -71,6 +71,7 @@ const Dashboard = ({ courses, progressData }) => {
                 
                 {/* Left Side (Resume + Log Box) */}
                 <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {/* Apply flex: 1 to ensure 50-50 split */}
                     <div
                         style={{
                             flex: 1,
@@ -78,14 +79,17 @@ const Dashboard = ({ courses, progressData }) => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             background: 'transparent',
-                            height: '49.5%',
                             borderRadius: '10px',
                             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                         }}
                     >
                         <ResumeCourseCTA courses={courses} progressData={progressData} />
                     </div>
-                    <DailyLogBox />
+                    {/* Apply flex: 1 to make it equal */}
+                    <div style={{ flex: 1, }}>
+                        <DailyLogBox />
+                    </div>
+                    <HeartRateBox />
                 </div>
 
                 {/* Graph Box */}
@@ -164,19 +168,5 @@ const Dashboard = ({ courses, progressData }) => {
         </div>
     );
 };
-
-// Spinner CSS
-const style = document.createElement('style');
-style.innerHTML = `
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
-document.head.appendChild(style);
 
 export default Dashboard;

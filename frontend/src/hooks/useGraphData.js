@@ -14,7 +14,7 @@ const useGraphData = (activeGraph, startDate, endDate, plotType, selectedMonth) 
             const formattedEnd = endDate.toISOString().slice(0, 10);
         
             const response = await fetch(
-                `/api/python/process-csv?start_date=${formattedStart}&end_date=${formattedEnd}&plot_type=${plotType}&month=${selectedMonth}`
+                `${API_BASE_URL}/api/python/process-csv?start_date=${formattedStart}&end_date=${formattedEnd}&plot_type=${plotType}&month=${selectedMonth}`
             );
             
             const text = await response.text();

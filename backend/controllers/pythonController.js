@@ -14,6 +14,9 @@ const processCSV = (req, res) => {
 
     let resultData = '';
 
+    console.log("Attempting to run Python script...");
+    console.log(`Path to Python script: ${pythonScriptPath}`);
+
     pythonProcess.stdout.on('data', (data) => {
         resultData += data.toString();
         console.log("Raw Python Output:", resultData);  // Debugging

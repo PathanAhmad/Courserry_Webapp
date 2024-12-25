@@ -20,8 +20,10 @@ const processCSV = (req, res) => {
     });
 
     pythonProcess.stderr.on('data', (error) => {
-        console.error(`Python Error: ${error}`);
-    });
+        console.error("Python Script Error:");
+        console.error(error.toString());
+        res.status(500).json({ error: 'Python script error', details: error.toString() });
+    });    
 
     pythonProcess.on('close', (code) => {
         if (code === 0) {

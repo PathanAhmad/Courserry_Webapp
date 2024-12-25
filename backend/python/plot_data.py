@@ -80,16 +80,12 @@ def plot_validated_inference(csv_path, start_date, end_date, plot_type, month):
 
 if __name__ == "__main__":
     csv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/final.csv'))
-
-    # Check if CSV exists
-    if not os.path.exists(csv_path):
-        print(json.dumps({"error": "CSV file not found at {}".format(csv_path)}))
-        sys.exit(1)  # Exit to avoid further execution
-
+    print(f"Resolved CSV Path: {csv_path}")  # Add this line to check the path
     start_date = sys.argv[1] if len(sys.argv) > 1 else '2024-01-01'
     end_date = sys.argv[2] if len(sys.argv) > 2 else '2024-12-31'
     plot_type = sys.argv[3] if len(sys.argv) > 3 else 'daily'
     month = sys.argv[4] if len(sys.argv) > 4 else '1'
 
     plot_validated_inference(csv_path, start_date, end_date, plot_type, month)
+
 

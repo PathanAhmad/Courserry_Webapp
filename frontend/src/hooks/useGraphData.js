@@ -14,7 +14,7 @@ const useGraphData = (activeGraph, startDate, endDate, plotType, selectedMonth) 
             const formattedEnd = endDate.toISOString().slice(0, 10);
         
             const response = await fetch(
-                `/api/python/process-csv?start_date=${formattedStart}&end_date=${formattedEnd}&plot_type=${plotType}`
+                `/api/python/process-csv?start_date=${formattedStart}&end_date=${formattedEnd}&plot_type=${plotType}&month=${selectedMonth}`
             );
             
             const text = await response.text();
@@ -46,11 +46,11 @@ const useGraphData = (activeGraph, startDate, endDate, plotType, selectedMonth) 
                 };
             });
         
-            // 🔧 Filtering for daily, weekly, monthly
+            // 🔧 Refined Filtering for daily, weekly, monthly
             const filteredData = processedData.filter(item => {
                 if (plotType === 'monthly') return true;  
-                if (plotType === 'weekly') return item.Month === parseInt(selectedMonth, 10);  
-                if (plotType === 'daily') return item.month === parseInt(selectedMonth, 10);  
+                if (plotType === 'weekly') return item.Month === parseInt(selectedMonth, 10) && item.Year === startDate.getFullYear();  
+                if (plotType === 'daily') return item.Month === parseInt(selectedMonth, 10) && item.Year === startDate.getFullYear();  
                 return false;
             });
         

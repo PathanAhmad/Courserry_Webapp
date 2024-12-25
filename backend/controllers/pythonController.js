@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 const path = require('path');
+const { exec } = require('child_process');
 
 console.log("API endpoint /api/python/process-csv hit!");
 
@@ -18,6 +19,14 @@ const processCSV = (req, res) => {
 
     console.log("Attempting to run Python script...");
     console.log(`Path to Python script: ${pythonScriptPath}`);
+
+    exec('python --version', (error, stdout, stderr) => {
+        if (error) {
+            console.error("Python not found:", error);
+            return;
+        }
+        console.log("Python Version:", stdout || stderr);
+    });
 
     pythonProcess.stdout.on('data', (data) => {
         resultData += data.toString();

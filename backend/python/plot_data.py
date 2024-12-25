@@ -79,8 +79,7 @@ def plot_validated_inference(csv_path, start_date, end_date, plot_type, month):
 
 
 if __name__ == "__main__":
-    csv_path = os.path.join(os.path.dirname(__file__), '../data/final.csv')
-    
+    csv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/final.csv'))
     start_date = sys.argv[1] if len(sys.argv) > 1 else '2024-01-01'
     end_date = sys.argv[2] if len(sys.argv) > 2 else '2024-12-31'
     plot_type = sys.argv[3] if len(sys.argv) > 3 else 'daily'

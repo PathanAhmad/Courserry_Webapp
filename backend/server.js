@@ -64,3 +64,12 @@ app.get('/api/test-python', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);
 });
+
+const { exec } = require('child_process');
+exec('python --version', (error, stdout, stderr) => {
+    if (error) {
+        console.error("Python not found:", error);
+        return;
+    }
+    console.log("Python Version (from server.js):", stdout || stderr);
+});

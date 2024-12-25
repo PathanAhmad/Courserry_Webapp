@@ -57,6 +57,10 @@ app.get('/', (req, res) => {
     res.send('Backend server is running');
 });
 
+app.get('/api/test-python', (req, res) => {
+    res.json({ message: 'Python route is active!' });
+});
+
 app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);
 });

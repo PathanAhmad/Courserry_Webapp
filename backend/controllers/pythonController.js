@@ -1,6 +1,8 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
+console.log("API endpoint /api/python/process-csv hit!");
+
 const processCSV = (req, res) => {
     const startDate = new Date(req.query.start_date).toISOString().slice(0, 10) || '2024-01-01';
     const endDate = new Date(req.query.end_date).toISOString().slice(0, 10) || '2024-12-30';

@@ -5,59 +5,79 @@ import sys
 from datetime import datetime
 import os
 
+def plot_validated_inference(csv_path, start_date, end_date, plot_type):
+    print(f"Looking for CSV at: {csv_path}")
+    print(f"Received plot type: {plot_type}")
 
-def plot_validated_inference(csv_path, start_date, end_date, plot_type, month):
+    if not os.path.exists(csv_path):
+        print(json.dumps({"error": "CSV file not found"}))
+        return
+
     # Load CSV
     df = pd.read_csv(csv_path)
-
-    # Convert Date column to datetime
     df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
     df = df.dropna(subset=['Date'])
 
-    # Filter by month (if not monthly plot)
-    if plot_type in ['daily', 'weekly']:
-        df = df[df['Date'].dt.month == int(month)]
-
-    # Filter by date range
     mask = (df['Date'] >= start_date) & (df['Date'] <= end_date)
     filtered_df = df[mask]
 
     if filtered_df.empty:
-        print(json.dumps({"error": f"No data available for month {month} from {start_date} to {end_date}"}))
+        print(json.dumps({"error": f"No data available from {start_date} to {end_date}"}))
         return
 
-    # Aggregate by plot type
-    if plot_type == 'daily':
-        result = filtered_df
-    elif plot_type == 'weekly':
-        filtered_df.loc[:, 'Week'] = filtered_df['Date'].dt.isocalendar().week
-        result = filtered_df.groupby('Week', as_index=False).agg({
-            'Validated Inference Score': 'mean',
+    if plot_type == 'weekly':
+        filtered_df['Month'] = filtered_df['Date'].dt.month
+        filtered_df['WeekOfMonth'] = np.ceil(filtered_df['Date'].dt.day / 7).astype(int)
+
+        # Group by Month and WeekOfMonth
+        result = filtered_df.groupby(['Month', 'WeekOfMonth'], as_index=False).agg({
             'response': 'mean',
-            'Inference': 'mean'
+            'Inference': 'mean',
+            'Validated Inference Score': 'mean'
         })
+
+        # Force inject W1 to W5 for each month
+        all_weeks = pd.DataFrame({
+            'Month': np.repeat(result['Month'].unique(), 5),
+            'WeekOfMonth': np.tile(np.arange(1, 6), len(result['Month'].unique()))
+        })
+
+        # Merge and fill missing weeks with 0
+        result = pd.merge(all_weeks, result, on=['Month', 'WeekOfMonth'], how='left')
+        result['response'].fillna(0, inplace=True)
+        result['Inference'].fillna(0, inplace=True)
+        result['Validated Inference Score'].fillna(0, inplace=True)
+
+        # Ensure W1 to W5 is static per month
+        result['X'] = 'W' + result['WeekOfMonth'].astype(str)
+
+    elif plot_type == 'daily':
+        filtered_df['Day'] = filtered_df['Date'].dt.day
+        result = filtered_df[['Day', 'response', 'Inference', 'Validated Inference Score']]
+
     elif plot_type == 'monthly':
         filtered_df['Month'] = filtered_df['Date'].dt.month
         result = filtered_df.groupby('Month', as_index=False).agg({
-            'Validated Inference Score': 'mean',
             'response': 'mean',
-            'Inference': 'mean'
+            'Inference': 'mean',
+            'Validated Inference Score': 'mean'
         })
+        result.rename(columns={'Month': 'X'}, inplace=True)
+
     else:
         print(json.dumps({"error": "Invalid plot type"}))
         return
 
-    # Convert result to JSON
+    # Output Result
     print(result.to_json(orient='records'))
+    print(json.dumps({"status": "completed"}))
 
 
 if __name__ == "__main__":
     csv_path = os.path.join(os.path.dirname(__file__), '../data/final.csv')
-    
-    # Read arguments from Node.js
+
     start_date = sys.argv[1] if len(sys.argv) > 1 else '2024-01-01'
     end_date = sys.argv[2] if len(sys.argv) > 2 else '2024-12-31'
     plot_type = sys.argv[3] if len(sys.argv) > 3 else 'daily'
-    month = sys.argv[4] if len(sys.argv) > 4 else '1'  # Default to January if no month is passed
 
-    plot_validated_inference(csv_path, start_date, end_date, plot_type, month)
+    plot_validated_inference(csv_path, start_date, end_date, plot_type)

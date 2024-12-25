@@ -49,7 +49,7 @@ const useGraphData = (activeGraph, startDate, endDate, plotType, selectedMonth) 
             // 🔧 Refined Filtering for daily, weekly, monthly
             const filteredData = processedData.filter(item => {
                 if (plotType === 'monthly') return true;  
-                if (plotType === 'weekly') return item.Month === parseInt(selectedMonth, 10) && item.Year === startDate.getFullYear();  
+                if (plotType === 'weekly') return item.Year === startDate.getFullYear();  // Only filter by year
                 if (plotType === 'daily') return item.Month === parseInt(selectedMonth, 10) && item.Year === startDate.getFullYear();  
                 return false;
             });

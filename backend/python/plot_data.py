@@ -33,6 +33,7 @@ def plot_validated_inference(csv_path, start_date, end_date, plot_type, month):
         result = filtered_df
 
     elif plot_type == 'weekly':
+        filtered_df = filtered_df[filtered_df['Month'] == int(month)]
         # Weekly: Aggregate entire year by Week
         result = filtered_df.groupby(['Year', 'Week'], as_index=False).agg({
             'Validated Inference Score': 'mean',
@@ -48,9 +49,14 @@ def plot_validated_inference(csv_path, start_date, end_date, plot_type, month):
 
         # Merge and fill missing weeks
         result = pd.merge(all_weeks, result, on=['Year', 'Week'], how='left')
-        result['response'].fillna(0, inplace=True)
-        result['Inference'].fillna(0, inplace=True)
-        result['Validated Inference Score'].fillna(0, inplace=True)
+        result = result.assign(
+        response=result['response'].fillna(0),
+        Inference=result['Inference'].fillna(0),
+        **{'Validated Inference Score': result['Validated Inference Score'].fillna(0)}
+    )
+        
+        # 🔧 Remove weeks with all-zero values
+        result = result[result[['Validated Inference Score', 'response', 'Inference']].sum(axis=1) != 0]
 
         # Create Week Labels
         result['X'] = 'W' + result['Week'].astype(str)

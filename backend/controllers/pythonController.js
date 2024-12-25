@@ -26,10 +26,9 @@ const processCSV = (req, res) => {
     pythonProcess.on('close', (code) => {
         if (code === 0) {
             try {
-                // Extract only JSON data (array or object)
-                const jsonMatch = resultData.match(/\[.*\]|\{.*\}/s);  
+                const jsonMatch = resultData.match(/\[.*\]|\{.*\}/s);
                 if (jsonMatch) {
-                    res.json(JSON.parse(jsonMatch[0]));  // Send valid JSON
+                    res.json(JSON.parse(jsonMatch[0]));
                 } else {
                     res.status(500).json({ error: 'No valid graph data returned' });
                 }
@@ -43,7 +42,7 @@ const processCSV = (req, res) => {
         } else {
             res.status(500).json({ error: 'CSV Processing Failed' });
         }
-    });
+    });    
 };
 
 module.exports = { processCSV };

@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const { exec } = require('child_process');
+const fs = require('fs');  // File system module for checking file existence
 
 console.log("API endpoint /api/python/process-csv hit!");
 
@@ -13,12 +14,18 @@ const processCSV = (req, res) => {
     console.log("Plot Type Sent to Python:", plotType);  // Debugging log
 
     const pythonScriptPath = path.join(__dirname, '../python/plot_data.py');
-    const pythonProcess = spawn('python', [pythonScriptPath, startDate, endDate, plotType, selectedMonth]);
-
-    let resultData = '';
 
     console.log("Attempting to run Python script...");
     console.log(`Path to Python script: ${pythonScriptPath}`);
+
+    // Check if the Python script exists
+    if (!fs.existsSync(pythonScriptPath)) {
+        console.error("Python script not found at:", pythonScriptPath);
+        res.status(500).json({ error: 'Python script not found', path: pythonScriptPath });
+        return;
+    } else {
+        console.log("Python script found at:", pythonScriptPath);
+    }
 
     exec('python --version', (error, stdout, stderr) => {
         if (error) {
@@ -27,6 +34,10 @@ const processCSV = (req, res) => {
         }
         console.log("Python Version:", stdout || stderr);
     });
+
+    const pythonProcess = spawn('python', [pythonScriptPath, startDate, endDate, plotType, selectedMonth]);
+
+    let resultData = '';
 
     pythonProcess.stdout.on('data', (data) => {
         resultData += data.toString();

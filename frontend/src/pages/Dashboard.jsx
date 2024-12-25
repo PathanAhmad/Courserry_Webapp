@@ -16,11 +16,35 @@ const Dashboard = ({ courses, progressData }) => {
     const [plotType, setPlotType] = useState('daily');
     const [selectedMonth, setSelectedMonth] = useState('1');  // Default to January
 
-    // Pass selectedMonth to the useGraphData hook
     const { graphData } = useGraphData(activeGraph, startDate, endDate, plotType, selectedMonth);
     const loading = graphData.length === 0;
 
+    // Render graph with spinner logic
     const renderGraph = () => {
+        if (loading) {
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%',
+                    }}
+                >
+                    <div
+                        style={{
+                            border: '4px solid rgba(0, 0, 0, 0.1)',
+                            borderLeftColor: '#FFD700',
+                            borderRadius: '50%',
+                            width: '40px',
+                            height: '40px',
+                            animation: 'spin 1s linear infinite',
+                        }}
+                    />
+                </div>
+            );
+        }
+
         switch (activeGraph) {
             case 'daily':
                 return <DailyGraph data={graphData} />;
@@ -41,7 +65,6 @@ const Dashboard = ({ courses, progressData }) => {
                 gap: '20px',
                 height: '100vh',
                 padding: '20px',
-                background: 'rgba(245, 245, 245, 0)',
             }}
         >
             <div style={{ display: 'flex', gap: '20px', height: '85%' }}>
@@ -65,11 +88,11 @@ const Dashboard = ({ courses, progressData }) => {
                     <DailyLogBox />
                 </div>
 
-                {/* Graph Box (Yellow Box) */}
+                {/* Graph Box */}
                 <div
                     style={{
                         flex: 5,
-                        background: '#FFD700',
+                        background: 'White',
                         borderRadius: '10px',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                         height: '100%',
@@ -79,11 +102,27 @@ const Dashboard = ({ courses, progressData }) => {
                         padding: '20px',
                     }}
                 >
-                    {/* Filters Inside Graph Box */}
-                    <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
+                    {/* Filters */}
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: '15px',
+                        }}
+                    >
                         <div>
                             <label>Month:</label>
-                            <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+                            <select
+                                value={selectedMonth}
+                                onChange={(e) => setSelectedMonth(e.target.value)}
+                                disabled={plotType === 'monthly'}
+                                style={{
+                                    marginLeft: '10px',
+                                    padding: '5px 10px',
+                                    borderRadius: '5px',
+                                }}
+                            >
                                 {Array.from({ length: 12 }, (_, i) => (
                                     <option key={i + 1} value={i + 1}>
                                         {new Date(0, i).toLocaleString('default', { month: 'long' })}
@@ -91,9 +130,18 @@ const Dashboard = ({ courses, progressData }) => {
                                 ))}
                             </select>
                         </div>
+
                         <div>
                             <label>Plot Type:</label>
-                            <select value={plotType} onChange={(e) => setPlotType(e.target.value)}>
+                            <select
+                                value={plotType}
+                                onChange={(e) => setPlotType(e.target.value)}
+                                style={{
+                                    marginLeft: '10px',
+                                    padding: '5px 10px',
+                                    borderRadius: '5px',
+                                }}
+                            >
                                 <option value="daily">Daily</option>
                                 <option value="weekly">Weekly</option>
                                 <option value="monthly">Monthly</option>
@@ -101,27 +149,34 @@ const Dashboard = ({ courses, progressData }) => {
                         </div>
                     </div>
 
-                    {/* Graph Area */}
+                    {/* Graph Rendering Area */}
                     <div
                         style={{
                             flexGrow: 1,
-                            overflow: 'hidden',
                             borderRadius: '8px',
-                            height: '100%',
+                            overflow: 'hidden',
                         }}
                     >
-                        {loading ? (
-                            <p>Loading Graph...</p>
-                        ) : (
-                            <div style={{ width: '100%', height: '100%' }}>
-                                {renderGraph()}
-                            </div>
-                        )}
+                        {renderGraph()}
                     </div>
                 </div>
             </div>
         </div>
     );
 };
+
+// Spinner CSS
+const style = document.createElement('style');
+style.innerHTML = `
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+document.head.appendChild(style);
 
 export default Dashboard;

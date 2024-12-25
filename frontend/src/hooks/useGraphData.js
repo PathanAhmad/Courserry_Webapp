@@ -1,65 +1,64 @@
 import { useState, useEffect } from 'react';
 
+// Helper function to calculate days in a month
+const getDaysInMonth = (month, year) => {
+    return new Date(year, month, 0).getDate();  // Returns number of days in the month
+};
+
 const useGraphData = (activeGraph, startDate, endDate, plotType, selectedMonth) => {
     const [graphData, setGraphData] = useState([]);
 
     useEffect(() => {
         const fetchCSV = async () => {
-            try {
-                const response = await fetch(
-                    `/api/python/process-csv?start_date=${startDate.toISOString().slice(0, 10)}&end_date=${endDate.toISOString().slice(0, 10)}&plot_type=${plotType}&month=${selectedMonth}`
-                );
+            const formattedStart = startDate.toISOString().slice(0, 10);
+            const formattedEnd = endDate.toISOString().slice(0, 10);
+        
+            const response = await fetch(
+                `/api/python/process-csv?start_date=${formattedStart}&end_date=${formattedEnd}&plot_type=${plotType}`
+            );
+            
+            const text = await response.text();
+            const data = JSON.parse(text);
+        
+            let currentMonth = startDate.getMonth() + 1;
+            let currentYear = startDate.getFullYear();
+            let dayCounter = 0;
+        
+            const processedData = data.map((item) => {
+                const daysInMonth = getDaysInMonth(currentMonth, currentYear);
                 
-                const text = await response.text();
-                console.log("Raw API Response:", text);  // Debugging
-        
-                try {
-                    const data = JSON.parse(text);
-                    console.log("Parsed API Data:", data);
-        
-                    if (data.error) {
-                        console.warn(data.error);
-                        setGraphData([]);
-                        return;
+                dayCounter += 1;
+
+                // Reset to 1 if exceeding the number of days in the current month
+                if (dayCounter > daysInMonth) {
+                    dayCounter = 1;
+                    currentMonth += 1;
+                    if (currentMonth > 12) {
+                        currentMonth = 1;
+                        currentYear += 1;  // Increment year if January starts
                     }
-        
-                    const processed = processData(data, activeGraph, plotType);
-                    console.log("Processed Data for Graph:", processed);
-                    setGraphData(processed);
-                } catch (jsonError) {
-                    console.error("Failed to parse JSON. Response Text:", text);
-                    setGraphData([]);
                 }
-            } catch (error) {
-                console.error("Error fetching CSV data:", error);
-                setGraphData([]);
-            }
-        };     
+
+                return {
+                    ...item,
+                    day: item.Day || dayCounter,
+                    month: currentMonth
+                };
+            });
+        
+            // 🔧 Filtering for daily, weekly, monthly
+            const filteredData = processedData.filter(item => {
+                if (plotType === 'monthly') return true;  
+                if (plotType === 'weekly') return item.Month === parseInt(selectedMonth, 10);  
+                if (plotType === 'daily') return item.month === parseInt(selectedMonth, 10);  
+                return false;
+            });
+        
+            setGraphData(filteredData);
+        };
 
         fetchCSV();
-    }, [activeGraph, startDate, endDate, plotType, selectedMonth]);  // Ensure month/plotType triggers API call
-
-    const processData = (data, type, plotType) => {
-        if (plotType === 'daily') {
-            return data.map((row) => ({
-                day: new Date(row.Date).getDate(),  // Extract day from date
-                signal: row['Validated Inference Score'],
-                selfReported: row.response,
-            }));
-        } else if (plotType === 'weekly') {
-            return data.map((row) => ({
-                week: `Week ${row.Week}`,
-                signal: row['Validated Inference Score'],
-                selfReported: row.response,
-            }));
-        } else {
-            return data.map((row) => ({
-                month: row.Month,
-                signal: row['Validated Inference Score'],
-                selfReported: row.response,
-            }));
-        }
-    };
+    }, [activeGraph, startDate, endDate, plotType, selectedMonth]);
 
     return { graphData };
 };

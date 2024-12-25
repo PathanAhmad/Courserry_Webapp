@@ -13,6 +13,8 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
 
   // Has any courses?
   const userHasCourses = courses.length > 0;
+  const lastCourseExists = courses.some(course => course._id === lastCourseId);
+
 
   // Animation variants for fade+slide
   const fadeVariants = {
@@ -34,6 +36,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
+    padding: '40px 20px',  // ⬅️ Consistent padding for fallback
     justifyContent: 'center',
     cursor: 'pointer',
     background: `
@@ -46,7 +49,25 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
   };
 
   // ======= Fallback States =======
-  if (!lastCourseId) {
+  if (!lastCourseId || !lastCourseExists) {
+    const fallbackHeading = userHasCourses
+      ? "Your courses are left wondering where you left off to."
+      : "Haven't enlisted yet?";
+  
+    const fallbackSubtext = userHasCourses
+      ? "Click here to unsadden them. Click : ( -> : ) ."
+      : "No problem. Here's the magic button!";
+  
+    const fallbackButton = userHasCourses ? 'Check My Courses' : 'Browse Courses';
+  
+    const handleFallbackClick = () => {
+      if (userHasCourses) {
+        navigate('/student-portal/my-courses');
+      } else {
+        navigate('/student-portal/browse-courses');
+      }
+    };
+  
     return (
       <motion.div
         variants={fadeVariants}
@@ -66,6 +87,7 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
             textAlign: 'center',
             maxWidth: '450px',
             display: 'flex',
+            padding: '40px 20px',
             flexDirection: 'column',
             gap: '15px',
           }}

@@ -15,7 +15,7 @@ const app = express();
 
 const corsOptions = {
     origin: [
-        'https://spark-os.onrender.com/login', // Live frontend URL
+        'https://spark-os.onrender.com', // Live frontend URL
         'http://localhost:3000',                  // Local testing URL
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow necessary HTTP methods

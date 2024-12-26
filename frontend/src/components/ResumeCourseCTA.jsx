@@ -155,8 +155,9 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
     if (progress === 0) return 'Ready to start?';
     if (progress < 30) return 'Off to a great start 🚀';
     if (progress >= 30 && progress < 70) return "You're Halfway There! ⏳";
+    if (progress === 100) return "Congratulations! Course complete!";
     return "You're Over Halfway There! 🏁";
-  };
+};
 
   return (
     <motion.div
@@ -262,30 +263,33 @@ const ResumeCourseCTA = ({ courses = [], progressData = {} }) => {
           {progress.toFixed(2)}% Complete
         </motion.span>
 
-        {/* Resume Button */}
-        <motion.button
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          whileHover={{ scale: 1.07 }}
-          style={{
-            marginBottom: '30px',
-            padding: '10px 24px',
-            backgroundColor: '#324A5E',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
-          }}
-        >
-          <FaPlay size={16} />
-          Resume Course
-        </motion.button>
+        {/* Resume Button - Hides if progress is 100% */}
+        {progress < 100 && (
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2 }}
+            whileHover={{ scale: 1.07 }}
+            style={{
+              marginBottom: '30px',
+              padding: '10px 24px',
+              backgroundColor: '#324A5E',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
+            }}
+            onClick={handleResumeCourse}
+          >
+            <FaPlay size={16} />
+            Resume Course
+          </motion.button>
+        )}
       </div>
     </motion.div>
   );

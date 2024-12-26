@@ -245,11 +245,8 @@ const deleteQuestion = async (req, res) => {
         const question = video.questions.id(questionId);
         if (!question) return res.status(404).json({ message: 'Question not found' });
 
-        if (course.createdBy.toString() !== req.user.id) {
-            return res.status(403).json({ message: 'Access denied' });
-        }
-
-        await Course.deleteOne({ _id: questionId });
+        // Perform the deletion
+        question.deleteOne();
         await course.save();
 
         res.status(200).json({ message: 'Question deleted successfully' });
@@ -261,13 +258,24 @@ const deleteQuestion = async (req, res) => {
 const getCourseDetails = async (req, res) => {
     try {
         const { courseId } = req.params;
-
         const course = await Course.findById(courseId);
+
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
 
-        res.status(200).json({ course });
+        // Ensure all embedded videos and questions have _id
+        const formattedCourse = course.toObject();
+        formattedCourse.videos = formattedCourse.videos.map(video => ({
+            ...video,
+            _id: video._id,  // Ensure video _id is present
+            questions: video.questions.map(question => ({
+                ...question,
+                _id: question._id  // Ensure question _id is present
+            }))
+        }));
+
+        res.status(200).json({ course: formattedCourse });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import API_BASE_URL from '../config'; // Import API_BASE_URL
 import Loading from '../components/Loading';
+import { useNavigate } from 'react-router-dom';
 
 const EditCourse = () => {
     const { courseId } = useParams();
@@ -10,20 +11,38 @@ const EditCourse = () => {
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState(null);
 
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
     useEffect(() => {
         const fetchCourseDetails = async () => {
             try {
                 const response = await axios.get(`${API_BASE_URL}/api/courses/${courseId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
-                setCourse(response.data.course);
+    
+                const formattedCourse = response.data.course;
+    
+                // Ensure _id is tracked
+                formattedCourse.videos = formattedCourse.videos.map(video => ({
+                    ...video,
+                    _id: video._id,
+                    questions: video.questions.map(question => ({
+                        ...question,
+                        _id: question._id,
+                    }))
+                }));
+    
+                setCourse(formattedCourse);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching course details:', error);
                 setLoading(false);
             }
         };
-
         fetchCourseDetails();
     }, [courseId]);
 
@@ -81,23 +100,97 @@ const EditCourse = () => {
         setCourse({ ...course, videos: updatedVideos });
     };
 
-    const removeQuestion = (videoIndex, questionIndex) => {
+    const removeQuestion = async (videoIndex, questionIndex) => {
+        const questionId = course.videos[videoIndex].questions[questionIndex]._id;  // Get the question ID
         const updatedVideos = [...course.videos];
         updatedVideos[videoIndex].questions.splice(questionIndex, 1);
         setCourse({ ...course, videos: updatedVideos });
+    
+        // Send delete request if question has an ID (exists in the database)
+        if (questionId) {
+            try {
+                await axios.delete(
+                    `${API_BASE_URL}/api/courses/${courseId}/videos/${course.videos[videoIndex]._id}/questions/${questionId}/delete`,
+                    {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                    }
+                );
+            } catch (error) {
+                console.error('Failed to delete question:', error);
+                setMessage({ type: 'error', text: 'Failed to delete question' });
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage(null);
+    
         try {
-            const response = await axios.put(
-                `${API_BASE_URL}/api/courses/${courseId}/edit`, // Updated URL
-                course,
+            // 1. Update course title and description
+            await axios.put(
+                `${API_BASE_URL}/api/courses/${courseId}/edit`,
+                { title: course.title, description: course.description },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
+    
+            // 2. Loop through videos to update or add
+            for (const video of course.videos) {
+                let videoResponse;
+                if (video._id) {
+                    // Edit existing video
+                    videoResponse = await axios.put(
+                        `${API_BASE_URL}/api/courses/${courseId}/videos/${video._id}/edit`,
+                        { title: video.title, youtubeLink: video.youtubeLink },
+                        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+                    );
+                } else {
+                    // Add new video
+                    videoResponse = await axios.post(
+                        `${API_BASE_URL}/api/courses/add-video`,
+                        { courseId, title: video.title, youtubeLink: video.youtubeLink },
+                        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+                    );
+                }
+    
+                const videoId = video._id || videoResponse.data.course.videos.slice(-1)[0]._id;
+    
+                // 3. Update or add questions for the video
+                for (const question of video.questions) {
+                    if (question._id) {
+                        // Edit existing question
+                        await axios.put(
+                            `${API_BASE_URL}/api/courses/${courseId}/videos/${videoId}/questions/${question._id}/edit`,
+                            {
+                                questionText: question.questionText,
+                                options: question.options,
+                                correctOption: question.correctOption,
+                                explanation: question.explanation,
+                            },
+                            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+                        );
+                    } else {
+                        // Add new question
+                        await axios.post(
+                            `${API_BASE_URL}/api/courses/add-question`,
+                            {
+                                courseId,
+                                videoId,
+                                questionText: question.questionText,
+                                options: question.options,
+                                correctOption: question.correctOption,
+                                explanation: question.explanation,
+                            },
+                            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+                        );
+                    }
+                }
+            }
+    
             setMessage({ type: 'success', text: 'Course updated successfully!' });
         } catch (error) {
-            setMessage({ type: 'error', text: error.response?.data?.message || 'Failed to update course' });
+            setMessage({ type: 'error', text: 'Failed to update course' });
+            console.error('Error updating course:', error);
         }
     };
 
@@ -106,16 +199,39 @@ const EditCourse = () => {
 
     return (
         <div
+        style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',  // Full viewport height
+            background: '#f0f2f5',  // Light background for contrast (optional)
+        }}
+        >
+        <div
             style={{
                 padding: '20px',
                 background: '#f9f9f9',
                 borderRadius: '10px',
                 maxWidth: '800px',
+                width: '100%',
+                height: 'auto',
                 margin: '0 auto',
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                 color: '#333',
             }}
         >
+            <button
+                onClick={handleGoBack}
+                style={{
+                    marginBottom: '20px',
+                    padding: '10px 15px',
+                    border: 'none',
+                    borderRadius: '5px',
+                    background: '#ddd',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                }}
+            >Back</button>
             <h1 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>
                 Edit Course
             </h1>
@@ -290,17 +406,45 @@ const EditCourse = () => {
                                         marginBottom: '10px',
                                     }}
                                 />
+                                
+                                {/* Render Options */}
                                 {question.options.map((option, optionIndex) => (
-                                    <input
-                                        key={optionIndex}
-                                        type="text"
-                                        placeholder={`Option ${optionIndex + 1}`}
-                                        value={option}
+                                    <div key={optionIndex} style={{ marginBottom: '5px' }}>
+                                        <input
+                                            type="text"
+                                            placeholder={`Option ${optionIndex + 1}`}
+                                            value={option}
+                                            onChange={(e) =>
+                                                handleOptionChange(
+                                                    videoIndex,
+                                                    questionIndex,
+                                                    optionIndex,
+                                                    e.target.value
+                                                )
+                                            }
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px',
+                                                borderRadius: '5px',
+                                                border: '1px solid #ccc',
+                                            }}
+                                        />
+                                    </div>
+                                ))}
+
+                                {/* Correct Option Dropdown */}
+                                <div style={{ marginTop: '10px' }}>
+                                    <label style={{ fontWeight: 'bold', color: '#555' }}>
+                                        Select Correct Option
+                                    </label>
+                                    <select
+                                        value={question.correctOption}
                                         onChange={(e) =>
-                                            handleOptionChange(
+                                            handleQuestionChange(
                                                 videoIndex,
                                                 questionIndex,
-                                                optionIndex,
+                                                'correctOption',
                                                 e.target.value
                                             )
                                         }
@@ -310,10 +454,17 @@ const EditCourse = () => {
                                             padding: '10px',
                                             borderRadius: '5px',
                                             border: '1px solid #ccc',
-                                            marginBottom: '5px',
+                                            marginTop: '5px',
                                         }}
-                                    />
-                                ))}
+                                    >
+                                        {question.options.map((_, optionIndex) => (
+                                            <option key={optionIndex} value={optionIndex}>
+                                                Option {optionIndex + 1}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
                                 <textarea
                                     placeholder="Explanation"
                                     value={question.explanation}
@@ -326,8 +477,9 @@ const EditCourse = () => {
                                         padding: '10px',
                                         borderRadius: '5px',
                                         border: '1px solid #ccc',
+                                        marginTop: '10px',
                                     }}
-                                ></textarea>
+                                />
                             </div>
                         ))}
                     </div>
@@ -359,6 +511,7 @@ const EditCourse = () => {
                     </p>
                 )}
             </form>
+        </div>
         </div>
     );
 };

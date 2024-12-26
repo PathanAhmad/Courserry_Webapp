@@ -47,7 +47,11 @@ const CreateCourse = () => {
 
     const handleQuestionChange = (videoIndex, questionIndex, field, value) => {
         const updatedVideos = [...course.videos];
-        updatedVideos[videoIndex].questions[questionIndex][field] = value;
+        if (field === 'correctOption') {
+            updatedVideos[videoIndex].questions[questionIndex][field] = parseInt(value, 10) || 0;
+        } else {
+            updatedVideos[videoIndex].questions[questionIndex][field] = value;
+        }
         setCourse({ ...course, videos: updatedVideos });
     };
 

@@ -231,7 +231,7 @@ const EditCourse = () => {
                     cursor: 'pointer',
                     fontWeight: 'bold',
                 }}
-            >Back</button>
+            >← Back</button>
             <h1 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>
                 Edit Course
             </h1>
